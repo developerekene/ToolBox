@@ -107,20 +107,79 @@ const tools = [
     color: "#0EA5E9",
     requiredTier: "Platinum",
   },
-  { id: "13", title: "Scientific Calculator", icon: "calculator", color: "#3B82F6", requiredTier: "Silver" },
-  { id: "14", title: "BMI Calculator", icon: "heartbeat", color: "#10B981", requiredTier: "Silver" },
-  { id: "15", title: "Loan Calculator", icon: "money-bill-wave", color: "#F59E0B", requiredTier: "Gold" },
-  { id: "16", title: "Tip Calculator", icon: "hand-holding-usd", color: "#8B5CF6", requiredTier: "Silver" },
-  { id: "17", title: "Currency Converter", icon: "exchange-alt", color: "#EF4444", requiredTier: "Platinum" },
-  { id: "18", title: "Unit Converter", icon: "ruler-combined", color: "#6366F1", requiredTier: "Silver" },
-  { id: "19", title: "Investment Calc", icon: "chart-line", color: "#EC4899", requiredTier: "Platinum" },
-  { id: "20", title: "Discount Calc", icon: "percentage", color: "#14B8A6", requiredTier: "Gold" },
-  { id: "21", title: "Fuel Cost Calc", icon: "gas-pump", color: "#F43F5E", requiredTier: "Platinum" },
-  { id: "22", title: "Mortgage Calc", icon: "home", color: "#8B5CF6", requiredTier: "Platinum" },
+  {
+    id: "13",
+    title: "Scientific Calculator",
+    icon: "calculator",
+    color: "#3B82F6",
+    requiredTier: "Silver",
+  },
+  {
+    id: "14",
+    title: "BMI Calculator",
+    icon: "heartbeat",
+    color: "#10B981",
+    requiredTier: "Silver",
+  },
+  {
+    id: "15",
+    title: "Loan Calculator",
+    icon: "money-bill-wave",
+    color: "#F59E0B",
+    requiredTier: "Gold",
+  },
+  {
+    id: "16",
+    title: "Tip Calculator",
+    icon: "hand-holding-usd",
+    color: "#8B5CF6",
+    requiredTier: "Silver",
+  },
+  {
+    id: "17",
+    title: "Currency Converter",
+    icon: "exchange-alt",
+    color: "#EF4444",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "18",
+    title: "Unit Converter",
+    icon: "ruler-combined",
+    color: "#6366F1",
+    requiredTier: "Silver",
+  },
+  {
+    id: "19",
+    title: "Investment Calc",
+    icon: "chart-line",
+    color: "#EC4899",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "20",
+    title: "Discount Calc",
+    icon: "percentage",
+    color: "#14B8A6",
+    requiredTier: "Gold",
+  },
+  {
+    id: "21",
+    title: "Fuel Cost Calc",
+    icon: "gas-pump",
+    color: "#F43F5E",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "22",
+    title: "Mortgage Calc",
+    icon: "home",
+    color: "#8B5CF6",
+    requiredTier: "Platinum",
+  },
 ];
 
 const ToolboxsScreen: React.FC = () => {
-
   const handleClose = () => {
     setSelectedTool(null);
   };
@@ -134,7 +193,6 @@ const ToolboxsScreen: React.FC = () => {
     const tiers = ["Silver", "Gold", "Platinum"];
     return tiers.indexOf(userTier) >= tiers.indexOf(required);
   };
-
 
   const renderToolContent = (toolName: string) => {
     // Shared wrapper style for consistency
@@ -159,9 +217,7 @@ const ToolboxsScreen: React.FC = () => {
         return <PdfScannerScreen />;
 
       case "Video Trim":
-        return (
-          <VideoTrimScreen />
-        );
+        return <VideoTrimScreen />;
 
       case "Image Compress":
         return <ImageCompressScreen />;
@@ -238,7 +294,9 @@ const ToolboxsScreen: React.FC = () => {
       <View style={styles.buttonContainerMain}>
         <View>
           <Text style={styles.title}>Toolbox</Text>
-          <Text style={styles.subtitle}>Utility tools for your daily tasks</Text>
+          <Text style={styles.subtitle}>
+            Utility tools for your daily tasks
+          </Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.subtitle}>
@@ -292,7 +350,7 @@ const ToolboxsScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={styles.scrollContent}>
-            {/* {selectedTool && renderToolContent(selectedTool)} */}
+            {selectedTool && renderToolContent(selectedTool)}
           </ScrollView>
         </View>
       </Modal>
@@ -312,18 +370,17 @@ const styles = StyleSheet.create({
   buttonContainerMain: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   buttonContainer: {
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-
   },
   btnText: {
     color: "#F59E0B",
     fontWeight: 900,
-    fontSize: 12
+    fontSize: 12,
   },
   title: { fontSize: 28, fontWeight: "900", color: "#ffffff" },
   subtitle: { fontSize: 14, color: "#64748b", marginBottom: 30 },
