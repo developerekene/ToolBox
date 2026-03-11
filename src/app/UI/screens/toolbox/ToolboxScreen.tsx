@@ -9,13 +9,13 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import CropToolScreen from "./CropToolScreen";
-import WordCounterScreen from "./WordCounterScreen";
-import QRGeneratorScreen from "./QRGeneratorScreen";
-import TranslatorScreen from "./TranslatorScreen";
-import PdfScannerScreen from "./PdfScannerScreen";
+import CropToolScreen from "./silver/CropToolScreen";
+import WordCounterScreen from "./silver/WordCounterScreen";
+import QRGeneratorScreen from "./gold/QRGeneratorScreen";
+import TranslatorScreen from "./silver/TranslatorScreen";
+import PdfScannerScreen from "./gold/PdfScannerScreen";
 import VideoTrimScreen from "./VideoTrimScreen";
-import ImageCompressScreen from "./ImageCompressScreen";
+import ImageCompressScreen from "./gold/ImageCompressScreen";
 
 const tools = [
   {
