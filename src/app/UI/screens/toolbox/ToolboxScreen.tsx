@@ -14,7 +14,7 @@ import WordCounterScreen from "./silver/WordCounterScreen";
 import QRGeneratorScreen from "./gold/QRGeneratorScreen";
 import TranslatorScreen from "./silver/TranslatorScreen";
 import PdfScannerScreen from "./gold/PdfScannerScreen";
-import VideoTrimScreen from "./VideoTrimScreen";
+import VideoTrimScreen from "./platinium/VideoTrimScreen";
 import ImageCompressScreen from "./gold/ImageCompressScreen";
 
 const tools = [
