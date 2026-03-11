@@ -9,13 +9,33 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+
+// Silver Tools
 import CropToolScreen from "./silver/CropToolScreen";
 import WordCounterScreen from "./silver/WordCounterScreen";
-import QRGeneratorScreen from "./gold/QRGeneratorScreen";
 import TranslatorScreen from "./silver/TranslatorScreen";
+import ScientificCalculator from "./silver/ScientificCalculator";
+import BMICalculator from "./silver/BMICalculator";
+import TipCalculator from "./silver/TipCalculator";
+import UnitConverter from "./silver/UnitConverter";
+import LoanCalculator from "./silver/LoanCalculator";
+
+// Gold Tools
+import QRGeneratorScreen from "./gold/QRGeneratorScreen";
 import PdfScannerScreen from "./gold/PdfScannerScreen";
-import VideoTrimScreen from "./platinium/VideoTrimScreen";
 import ImageCompressScreen from "./gold/ImageCompressScreen";
+import DiscountCalc from "./gold/DiscountCalc";
+
+// Platinum Tools
+import VideoTrimScreen from "./platinium/VideoTrimScreen";
+import AudioRec from "./platinium/AudioRec";
+import ZipCreator from "./platinium/ZipCreator";
+import NotesPro from "./platinium/NotesPro";
+import EncoderDecoder from "./platinium/EncoderDecoder";
+import CurrencyConverter from "./platinium/CurrencyConverter";
+import InvestmentCalc from "./platinium/InvestmentCalc";
+import FuelCostCalc from "./platinium/FuelCostCalc";
+import MortgageCalc from "./platinium/MortgageCalc";
 
 const tools = [
   {
@@ -201,86 +221,73 @@ const ToolboxsScreen: React.FC = () => {
     );
 
     switch (toolName) {
+      // Silver tier tools
       case "Crop Tool":
         return <CropToolScreen />;
 
       case "Word Counter":
         return <WordCounterScreen />;
 
-      case "QR Code Generator":
-        return <QRGeneratorScreen />;
-
       case "Translator":
         return <TranslatorScreen />;
 
+      case "Scientific Calculator":
+        return <ScientificCalculator />;
+
+      case "BMI Calculator":
+        return <BMICalculator />;
+
+      case "Tip Calculator":
+        return <TipCalculator />;
+
+      case "Unit Converter":
+        return <UnitConverter />;
+
+      case "Loan Calculator":
+        return <LoanCalculator />;
+
+      // gold tier tools
       case "PDF Scanner":
         return <PdfScannerScreen />;
 
-      case "Video Trim":
-        return <VideoTrimScreen />;
+      case "QR Code Generator":
+        return <QRGeneratorScreen />;
 
       case "Image Compress":
         return <ImageCompressScreen />;
 
+      case "Discount Calc":
+        return <DiscountCalc />;
+
+      // Platinum tier tools
       case "Audio Rec":
-        return (
-          <ToolView>
-            <Ionicons
-              name="mic-outline"
-              size={60}
-              color="#14B8A6"
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={styles.toolPlaceholder}>
-              High Quality Voice Recorder
-            </Text>
-            <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: "#14B8A6" }]}
-            >
-              <Text style={styles.actionBtnText}>Record Audio</Text>
-            </TouchableOpacity>
-          </ToolView>
-        );
+        return <AudioRec />;
+
+      case "Video Trim":
+        return <VideoTrimScreen />;
 
       case "Zip Creator":
-        return (
-          <ToolView>
-            <Ionicons
-              name="archive-outline"
-              size={60}
-              color="#F43F5E"
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={styles.toolPlaceholder}>
-              Compress multiple files into .zip
-            </Text>
-            <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: "#F43F5E" }]}
-            >
-              <Text style={styles.actionBtnText}>Select Files</Text>
-            </TouchableOpacity>
-          </ToolView>
-        );
+        return <ZipCreator />;
 
       case "Notes Pro":
-        return (
-          <ToolView>
-            <Ionicons
-              name="create-outline"
-              size={60}
-              color="#8B5CF6"
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={styles.toolPlaceholder}>
-              Advanced note-taking with rich text
-            </Text>
-            <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: "#8B5CF6" }]}
-            >
-              <Text style={styles.actionBtnText}>Create Note</Text>
-            </TouchableOpacity>
-          </ToolView>
-        );
+        return <NotesPro />;
+
+      case "Encoder / Decoder":
+        return <EncoderDecoder />;
+
+      case "Currency Converter":
+        return <CurrencyConverter />;
+
+      case "Investment Calc":
+        return <InvestmentCalc />;
+
+      case "Fuel Cost Calc":
+        return;
+        <FuelCostCalc />;
+
+      case "Mortgage Calc":
+        return;
+        <MortgageCalc />;
 
       default:
         return (
