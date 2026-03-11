@@ -9,13 +9,33 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import CropToolScreen from "./CropToolScreen";
-import WordCounterScreen from "./WordCounterScreen";
-import QRGeneratorScreen from "./QRGeneratorScreen";
-import TranslatorScreen from "./TranslatorScreen";
-import PdfScannerScreen from "./PdfScannerScreen";
-import VideoTrimScreen from "./VideoTrimScreen";
-import ImageCompressScreen from "./ImageCompressScreen";
+
+// Silver Tools
+import CropToolScreen from "./silver/CropToolScreen";
+import WordCounterScreen from "./silver/WordCounterScreen";
+import TranslatorScreen from "./silver/TranslatorScreen";
+import ScientificCalculator from "./silver/ScientificCalculator";
+import BMICalculator from "./silver/BMICalculator";
+import TipCalculator from "./silver/TipCalculator";
+import UnitConverter from "./silver/UnitConverter";
+import LoanCalculator from "./silver/LoanCalculator";
+
+// Gold Tools
+import QRGeneratorScreen from "./gold/QRGeneratorScreen";
+import PdfScannerScreen from "./gold/PdfScannerScreen";
+import ImageCompressScreen from "./gold/ImageCompressScreen";
+import DiscountCalc from "./gold/DiscountCalc";
+
+// Platinum Tools
+import VideoTrimScreen from "./platinium/VideoTrimScreen";
+import AudioRec from "./platinium/AudioRec";
+import ZipCreator from "./platinium/ZipCreator";
+import NotesPro from "./platinium/NotesPro";
+import EncoderDecoder from "./platinium/EncoderDecoder";
+import CurrencyConverter from "./platinium/CurrencyConverter";
+import InvestmentCalc from "./platinium/InvestmentCalc";
+import FuelCostCalc from "./platinium/FuelCostCalc";
+import MortgageCalc from "./platinium/MortgageCalc";
 
 const tools = [
   {
@@ -107,20 +127,79 @@ const tools = [
     color: "#0EA5E9",
     requiredTier: "Platinum",
   },
-  { id: "13", title: "Scientific Calculator", icon: "calculator", color: "#3B82F6", requiredTier: "Silver" },
-  { id: "14", title: "BMI Calculator", icon: "heartbeat", color: "#10B981", requiredTier: "Silver" },
-  { id: "15", title: "Loan Calculator", icon: "money-bill-wave", color: "#F59E0B", requiredTier: "Gold" },
-  { id: "16", title: "Tip Calculator", icon: "hand-holding-usd", color: "#8B5CF6", requiredTier: "Silver" },
-  { id: "17", title: "Currency Converter", icon: "exchange-alt", color: "#EF4444", requiredTier: "Platinum" },
-  { id: "18", title: "Unit Converter", icon: "ruler-combined", color: "#6366F1", requiredTier: "Silver" },
-  { id: "19", title: "Investment Calc", icon: "chart-line", color: "#EC4899", requiredTier: "Platinum" },
-  { id: "20", title: "Discount Calc", icon: "percentage", color: "#14B8A6", requiredTier: "Gold" },
-  { id: "21", title: "Fuel Cost Calc", icon: "gas-pump", color: "#F43F5E", requiredTier: "Platinum" },
-  { id: "22", title: "Mortgage Calc", icon: "home", color: "#8B5CF6", requiredTier: "Platinum" },
+  {
+    id: "13",
+    title: "Scientific Calculator",
+    icon: "calculator",
+    color: "#3B82F6",
+    requiredTier: "Silver",
+  },
+  {
+    id: "14",
+    title: "BMI Calculator",
+    icon: "heartbeat",
+    color: "#10B981",
+    requiredTier: "Silver",
+  },
+  {
+    id: "15",
+    title: "Loan Calculator",
+    icon: "money-bill-wave",
+    color: "#F59E0B",
+    requiredTier: "Gold",
+  },
+  {
+    id: "16",
+    title: "Tip Calculator",
+    icon: "hand-holding-usd",
+    color: "#8B5CF6",
+    requiredTier: "Silver",
+  },
+  {
+    id: "17",
+    title: "Currency Converter",
+    icon: "exchange-alt",
+    color: "#EF4444",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "18",
+    title: "Unit Converter",
+    icon: "ruler-combined",
+    color: "#6366F1",
+    requiredTier: "Silver",
+  },
+  {
+    id: "19",
+    title: "Investment Calc",
+    icon: "chart-line",
+    color: "#EC4899",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "20",
+    title: "Discount Calc",
+    icon: "percentage",
+    color: "#14B8A6",
+    requiredTier: "Gold",
+  },
+  {
+    id: "21",
+    title: "Fuel Cost Calc",
+    icon: "gas-pump",
+    color: "#F43F5E",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "22",
+    title: "Mortgage Calc",
+    icon: "home",
+    color: "#8B5CF6",
+    requiredTier: "Platinum",
+  },
 ];
 
 const ToolboxsScreen: React.FC = () => {
-
   const handleClose = () => {
     setSelectedTool(null);
   };
@@ -135,7 +214,6 @@ const ToolboxsScreen: React.FC = () => {
     return tiers.indexOf(userTier) >= tiers.indexOf(required);
   };
 
-
   const renderToolContent = (toolName: string) => {
     // Shared wrapper style for consistency
     const ToolView = ({ children }: { children: React.ReactNode }) => (
@@ -143,88 +221,73 @@ const ToolboxsScreen: React.FC = () => {
     );
 
     switch (toolName) {
+      // Silver tier tools
       case "Crop Tool":
         return <CropToolScreen />;
 
       case "Word Counter":
         return <WordCounterScreen />;
 
-      case "QR Code Generator":
-        return <QRGeneratorScreen />;
-
       case "Translator":
         return <TranslatorScreen />;
 
+      case "Scientific Calculator":
+        return <ScientificCalculator />;
+
+      case "BMI Calculator":
+        return <BMICalculator />;
+
+      case "Tip Calculator":
+        return <TipCalculator />;
+
+      case "Unit Converter":
+        return <UnitConverter />;
+
+      case "Loan Calculator":
+        return <LoanCalculator />;
+
+      // gold tier tools
       case "PDF Scanner":
         return <PdfScannerScreen />;
 
-      case "Video Trim":
-        return (
-          <VideoTrimScreen />
-        );
+      case "QR Code Generator":
+        return <QRGeneratorScreen />;
 
       case "Image Compress":
         return <ImageCompressScreen />;
 
+      case "Discount Calc":
+        return <DiscountCalc />;
+
+      // Platinum tier tools
       case "Audio Rec":
-        return (
-          <ToolView>
-            <Ionicons
-              name="mic-outline"
-              size={60}
-              color="#14B8A6"
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={styles.toolPlaceholder}>
-              High Quality Voice Recorder
-            </Text>
-            <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: "#14B8A6" }]}
-            >
-              <Text style={styles.actionBtnText}>Record Audio</Text>
-            </TouchableOpacity>
-          </ToolView>
-        );
+        return <AudioRec />;
+
+      case "Video Trim":
+        return <VideoTrimScreen />;
 
       case "Zip Creator":
-        return (
-          <ToolView>
-            <Ionicons
-              name="archive-outline"
-              size={60}
-              color="#F43F5E"
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={styles.toolPlaceholder}>
-              Compress multiple files into .zip
-            </Text>
-            <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: "#F43F5E" }]}
-            >
-              <Text style={styles.actionBtnText}>Select Files</Text>
-            </TouchableOpacity>
-          </ToolView>
-        );
+        return <ZipCreator />;
 
       case "Notes Pro":
-        return (
-          <ToolView>
-            <Ionicons
-              name="create-outline"
-              size={60}
-              color="#8B5CF6"
-              style={{ alignSelf: "center" }}
-            />
-            <Text style={styles.toolPlaceholder}>
-              Advanced note-taking with rich text
-            </Text>
-            <TouchableOpacity
-              style={[styles.actionBtn, { backgroundColor: "#8B5CF6" }]}
-            >
-              <Text style={styles.actionBtnText}>Create Note</Text>
-            </TouchableOpacity>
-          </ToolView>
-        );
+        return <NotesPro />;
+
+      case "Encoder / Decoder":
+        return <EncoderDecoder />;
+
+      case "Currency Converter":
+        return <CurrencyConverter />;
+
+      case "Investment Calc":
+        return <InvestmentCalc />;
+
+      case "Fuel Cost Calc":
+        return;
+        <FuelCostCalc />;
+
+      case "Mortgage Calc":
+        return;
+        <MortgageCalc />;
 
       default:
         return (
@@ -238,7 +301,9 @@ const ToolboxsScreen: React.FC = () => {
       <View style={styles.buttonContainerMain}>
         <View>
           <Text style={styles.title}>Toolbox</Text>
-          <Text style={styles.subtitle}>Utility tools for your daily tasks</Text>
+          <Text style={styles.subtitle}>
+            Utility tools for your daily tasks
+          </Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.subtitle}>
@@ -292,7 +357,7 @@ const ToolboxsScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={styles.scrollContent}>
-            {/* {selectedTool && renderToolContent(selectedTool)} */}
+            {selectedTool && renderToolContent(selectedTool)}
           </ScrollView>
         </View>
       </Modal>
@@ -312,18 +377,17 @@ const styles = StyleSheet.create({
   buttonContainerMain: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   buttonContainer: {
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-
   },
   btnText: {
     color: "#F59E0B",
     fontWeight: 900,
-    fontSize: 12
+    fontSize: 12,
   },
   title: { fontSize: 28, fontWeight: "900", color: "#ffffff" },
   subtitle: { fontSize: 14, color: "#64748b", marginBottom: 30 },
