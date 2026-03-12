@@ -203,7 +203,7 @@ const TranslatorScreen: React.FC = () => {
       </View>
 
       {/* Translate Button */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[
           styles.translateButton,
           !sourceText.trim() && styles.buttonDisabled,
@@ -213,6 +213,19 @@ const TranslatorScreen: React.FC = () => {
       >
         <Ionicons name="language" size={24} color="#fff" />
         <Text style={styles.translateButtonText}>Translate</Text>
+      </TouchableOpacity> */}
+      <TouchableOpacity
+        style={[
+          styles.translateButton,
+          (!sourceText.trim() || isLoading) && styles.buttonDisabled,
+        ]}
+        onPress={translate}
+        disabled={!sourceText.trim() || isLoading}
+      >
+        <Ionicons name="language" size={24} color="#fff" />
+        <Text style={styles.translateButtonText}>
+          {isLoading ? "Translating..." : "Translate"}
+        </Text>
       </TouchableOpacity>
 
       {/* Translation Result */}
