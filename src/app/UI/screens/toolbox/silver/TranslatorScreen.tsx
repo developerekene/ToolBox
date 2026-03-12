@@ -203,17 +203,7 @@ const TranslatorScreen: React.FC = () => {
       </View>
 
       {/* Translate Button */}
-      {/* <TouchableOpacity
-        style={[
-          styles.translateButton,
-          !sourceText.trim() && styles.buttonDisabled,
-        ]}
-        onPress={translate}
-        disabled={!sourceText.trim()}
-      >
-        <Ionicons name="language" size={24} color="#fff" />
-        <Text style={styles.translateButtonText}>Translate</Text>
-      </TouchableOpacity> */}
+
       <TouchableOpacity
         style={[
           styles.translateButton,
@@ -261,13 +251,13 @@ const TranslatorScreen: React.FC = () => {
 
       {/* Info Card */}
       <View style={styles.infoCard}>
-        <View style={styles.infoRow}>
+        {/* <View style={styles.infoRow}>
           <Ionicons name="information-circle" size={20} color="#3B82F6" />
           <Text style={styles.infoText}>
             This is a demo translator. Connect a translation API (like Google
             Translate or DeepL) for real translations.
           </Text>
-        </View>
+        </View> */}
         <View style={styles.infoRow}>
           <Ionicons name="globe-outline" size={20} color="#10B981" />
           <Text style={styles.infoText}>
