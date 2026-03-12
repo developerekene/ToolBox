@@ -56,6 +56,8 @@ const TranslatorScreen: React.FC = () => {
   //   );
   // };
 
+  const API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
+
   const translate = async () => {
     if (!sourceText.trim()) {
       Alert.alert("Input Required", "Please enter text to translate");
@@ -65,7 +67,7 @@ const TranslatorScreen: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `https://translation.googleapis.com/language/translate/v2?key=YOUR_API_KEY`,
+        `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
