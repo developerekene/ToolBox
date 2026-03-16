@@ -18,7 +18,7 @@ import ScientificCalculator from "./silver/ScientificCalculator";
 import BMICalculator from "./silver/BMICalculator";
 import TipCalculator from "./silver/TipCalculator";
 import UnitConverter from "./silver/UnitConverter";
-import LoanCalculator from "./silver/LoanCalculator";
+import LoanCalculator from "./gold/LoanCalculator";
 
 // Gold Tools
 import QRGeneratorScreen from "./gold/QRGeneratorScreen";
