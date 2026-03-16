@@ -19,6 +19,7 @@ import BMICalculator from "./silver/BMICalculator";
 import TipCalculator from "./silver/TipCalculator";
 import UnitConverter from "./silver/UnitConverter";
 import LoanCalculator from "./gold/LoanCalculator";
+import ORScanner from "./silver/ORScanner";
 
 // Gold Tools
 import QRGeneratorScreen from "./gold/QRGeneratorScreen";
@@ -271,6 +272,9 @@ const ToolboxsScreen: React.FC = () => {
 
       case "Notes Pro":
         return <NotesPro />;
+
+      case "QR Scanner":
+        return <ORScanner />;
 
       case "Encoder / Decoder":
         return <EncoderDecoder />;
