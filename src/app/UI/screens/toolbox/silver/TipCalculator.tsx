@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 export default function App() {
-
   const [bill, setBill] = useState("");
   const [tipPercent, setTipPercent] = useState(15);
   const [tip, setTip] = useState(0);
@@ -53,28 +52,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    textAlign: "center"
+    textAlign: "center",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
     marginVertical: 10,
-    borderRadius: 5
+    borderRadius: 5,
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 10
+    marginVertical: 10,
   },
   result: {
     fontSize: 18,
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 });

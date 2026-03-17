@@ -18,7 +18,7 @@ import ScientificCalculator from "./silver/ScientificCalculator";
 import BMICalculator from "./silver/BMICalculator";
 import TipCalculator from "./silver/TipCalculator";
 import UnitConverter from "./silver/UnitConverter";
-import LoanCalculator from "./silver/LoanCalculator";
+import LoanCalculator from "./gold/LoanCalculator";
 import ORScanner from "./silver/ORScanner";
 
 // Gold Tools
@@ -208,7 +208,8 @@ const ToolboxsScreen: React.FC = () => {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
 
   // Fixed tier
-  const userTier = "Silver"; // Change to Silver / Gold / Platinum
+  // const userTier = "Silver"; // Change to Silver / Gold / Platinum
+  const userTier = "Platinum"; // Change to Silver / Gold / Platinum
 
   const isTierAccessible = (required: string) => {
     const tiers = ["Silver", "Gold", "Platinum"];
