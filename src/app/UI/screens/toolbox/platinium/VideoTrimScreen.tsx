@@ -1,3 +1,16 @@
+// import { View, Text } from "react-native";
+// import React from "react";
+
+// const VideoTrimScreen = () => {
+//   return (
+//     <View>
+//       <Text>VideoTrimScreen</Text>
+//     </View>
+//   );
+// };
+
+// export default VideoTrimScreen;
+
 import React, { useState, useRef } from "react";
 import {
   View,
