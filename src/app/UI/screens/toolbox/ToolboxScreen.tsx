@@ -65,7 +65,7 @@ const tools = [
     title: "QR Code Generator",
     icon: "qrcode",
     color: "#8B5CF6",
-    requiredTier: "Gold",
+    requiredTier: "Silver",
   },
 
   // ✅ NEW
@@ -74,7 +74,7 @@ const tools = [
     title: "QR Scanner",
     icon: "qrcode",
     color: "#22C55E",
-    requiredTier: "Silver",
+    requiredTier: "Gold",
   },
 
   {
@@ -209,7 +209,7 @@ const ToolboxsScreen: React.FC = () => {
 
   // Fixed tier
   // const userTier = "Silver"; // Change to Silver / Gold / Platinum
-  const userTier = "Platinum"; // Change to Silver / Gold / Platinum
+  const userTier = "Silver"; // Change to Silver / Gold / Platinum
 
   const isTierAccessible = (required: string) => {
     const tiers = ["Silver", "Gold", "Platinum"];
@@ -310,11 +310,11 @@ const ToolboxsScreen: React.FC = () => {
             Utility tools for your daily tasks
           </Text>
         </View>
-        <View style={styles.buttonContainer}>
+        {/* <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.subtitle}>
             <Text style={styles.btnText}>Upgrade Membership</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
 
       <ScrollView
