@@ -287,12 +287,10 @@ const ToolboxsScreen: React.FC = () => {
         return <InvestmentCalc />;
 
       case "Fuel Cost Calc":
-        return;
-        <FuelCostCalc />;
+        return <FuelCostCalc />;
 
       case "Mortgage Calc":
-        return;
-        <MortgageCalc />;
+        return <MortgageCalc />;
 
       default:
         return (
