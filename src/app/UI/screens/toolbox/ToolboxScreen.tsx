@@ -77,13 +77,13 @@ const tools = [
     requiredTier: "Gold",
   },
 
-  {
-    id: "6",
-    title: "Video Trim",
-    icon: "video",
-    color: "#EF4444",
-    requiredTier: "Platinum",
-  },
+  // {
+  //   id: "6",
+  //   title: "Video Trim",
+  //   icon: "video",
+  //   color: "#EF4444",
+  //   requiredTier: "Platinum",
+  // },
   {
     id: "7",
     title: "Image Compress",
@@ -98,13 +98,13 @@ const tools = [
     color: "#EC4899",
     requiredTier: "Silver",
   },
-  {
-    id: "9",
-    title: "Audio Rec",
-    icon: "microphone",
-    color: "#14B8A6",
-    requiredTier: "Platinum",
-  },
+  // {
+  //   id: "9",
+  //   title: "Audio Rec",
+  //   icon: "microphone",
+  //   color: "#14B8A6",
+  //   requiredTier: "Platinum",
+  // },
   {
     id: "10",
     title: "Zip Creator",
