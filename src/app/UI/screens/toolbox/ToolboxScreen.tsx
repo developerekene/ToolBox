@@ -47,6 +47,20 @@ const tools = [
     requiredTier: "Silver",
   },
   {
+    id: "13",
+    title: "Scientific Calculator",
+    icon: "calculator",
+    color: "#3B82F6",
+    requiredTier: "Silver",
+  },
+  {
+    id: "14",
+    title: "BMI Calculator",
+    icon: "heartbeat",
+    color: "#10B981",
+    requiredTier: "Silver",
+  },
+  {
     id: "2",
     title: "Word Counter",
     icon: "font",
@@ -128,20 +142,7 @@ const tools = [
     color: "#0EA5E9",
     requiredTier: "Platinum",
   },
-  {
-    id: "13",
-    title: "Scientific Calculator",
-    icon: "calculator",
-    color: "#3B82F6",
-    requiredTier: "Silver",
-  },
-  {
-    id: "14",
-    title: "BMI Calculator",
-    icon: "heartbeat",
-    color: "#10B981",
-    requiredTier: "Silver",
-  },
+
   {
     id: "15",
     title: "Loan Calculator",
