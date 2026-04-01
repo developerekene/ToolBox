@@ -106,7 +106,22 @@ const CheckoutModal: React.FC<Props> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  //   const handlePay = () => {
+  //     if (!validate()) return;
+  //     setStep("processing");
+  //     setTimeout(() => {
+  //       setStep("success");
+  //     }, 2000);
+  //   };
   const handlePay = () => {
+    if (paymentMethod === "paypal") {
+      // Open PayPal externally — don't process internally
+      import("react-native").then(({ Linking }) => {
+        Linking.openURL("https://www.paypal.com/checkoutnow"); // replace with your real PayPal checkout URL
+      });
+      return;
+    }
+
     if (!validate()) return;
     setStep("processing");
     setTimeout(() => {
