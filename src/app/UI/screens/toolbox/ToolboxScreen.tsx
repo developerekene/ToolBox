@@ -38,6 +38,10 @@ import InvestmentCalc from "./platinium/InvestmentCalc";
 import FuelCostCalc from "./platinium/FuelCostCalc";
 import MortgageCalc from "./platinium/MortgageCalc";
 
+// Membership Modal
+import MembershipModal, { Tier } from "./MembershipModal";
+import CheckoutModal from "./CheckoutModal";
+
 const tools = [
   {
     id: "1",
@@ -207,10 +211,15 @@ const ToolboxsScreen: React.FC = () => {
   };
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  const [userTier, setUserTier] = useState<Tier>("Silver");
+  const [membershipVisible, setMembershipVisible] = useState(false);
+
+  const [checkoutVisible, setCheckoutVisible] = useState(false);
+  const [checkoutTier, setCheckoutTier] = useState<Tier>("Gold");
 
   // Fixed tier
   // const userTier = "Silver"; // Change to Silver / Gold / Platinum
-  const userTier = "Silver"; // Change to Silver / Gold / Platinum
+  //const userTier = "Silver";  Change to Silver / Gold / Platinum
 
   const isTierAccessible = (required: string) => {
     const tiers = ["Silver", "Gold", "Platinum"];
@@ -309,11 +318,40 @@ const ToolboxsScreen: React.FC = () => {
             Utility tools for your daily tasks
           </Text>
         </View>
-        {/* <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.subtitle}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.subtitle}
+            onPress={() => setMembershipVisible(true)}
+          >
             <Text style={styles.btnText}>Upgrade Membership</Text>
           </TouchableOpacity>
-        </View> */}
+          {/* modal */}
+          {/* <MembershipModal
+            visible={membershipVisible}
+            currentTier={userTier}
+            onClose={() => setMembershipVisible(false)}
+            onUpgrade={(tier) => setUserTier(tier)}
+          /> */}
+          <MembershipModal
+            visible={membershipVisible}
+            currentTier={userTier}
+            onClose={() => setMembershipVisible(false)}
+            onUpgrade={(tier) => {
+              setCheckoutTier(tier);
+              setMembershipVisible(false);
+              setCheckoutVisible(true);
+            }}
+          />
+          <CheckoutModal
+            visible={checkoutVisible}
+            tier={checkoutTier}
+            onClose={() => setCheckoutVisible(false)}
+            onSuccess={(tier) => {
+              setUserTier(tier); // unlocks tools right away
+              setCheckoutVisible(false);
+            }}
+          />
+        </View>
       </View>
 
       <ScrollView
