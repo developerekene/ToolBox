@@ -326,13 +326,8 @@ const ToolboxsScreen: React.FC = () => {
             <Text style={styles.btnText}>Upgrade Membership</Text>
           </TouchableOpacity>
           {/* modal */}
+
           {/* <MembershipModal
-            visible={membershipVisible}
-            currentTier={userTier}
-            onClose={() => setMembershipVisible(false)}
-            onUpgrade={(tier) => setUserTier(tier)}
-          /> */}
-          <MembershipModal
             visible={membershipVisible}
             currentTier={userTier}
             onClose={() => setMembershipVisible(false)}
@@ -340,6 +335,20 @@ const ToolboxsScreen: React.FC = () => {
               setCheckoutTier(tier);
               setMembershipVisible(false);
               setCheckoutVisible(true);
+            }}
+          /> */}
+          <MembershipModal
+            visible={membershipVisible}
+            currentTier={userTier}
+            onClose={() => setMembershipVisible(false)}
+            onUpgrade={(tier) => {
+              if (tier === "Silver") {
+                setUserTier(tier); // downgrade immediately, no checkout
+              } else {
+                setCheckoutTier(tier);
+                setCheckoutVisible(true);
+              }
+              setMembershipVisible(false);
             }}
           />
           <CheckoutModal

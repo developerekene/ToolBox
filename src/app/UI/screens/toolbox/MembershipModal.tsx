@@ -85,10 +85,15 @@ const MembershipModal: React.FC<Props> = ({
 
   const ctaTextColor = selected === "Gold" ? "#1a0e00" : "#fff";
 
-  const ctaLabel =
-    selected === currentTier
-      ? `Continue with ${selected}`
-      : `Upgrade to ${selected}`;
+  //   const ctaLabel =
+  //     selected === currentTier
+  //       ? `Continue with ${selected}`
+  //       : `Upgrade to ${selected}`;
+  const ctaLabel = () => {
+    if (selected === currentTier) return `Continue with ${selected}`;
+    if (selected === "Silver") return "Downgrade to Silver";
+    return `Upgrade to ${selected}`;
+  };
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -115,14 +120,6 @@ const MembershipModal: React.FC<Props> = ({
                     onPress={() => setSelected(tier)}
                     activeOpacity={0.85}
                   >
-                    {isCurrent && (
-                      <View style={[s.currentBadge, { borderColor: color }]}>
-                        <Text style={[s.currentBadgeText, { color }]}>
-                          Current
-                        </Text>
-                      </View>
-                    )}
-
                     <View style={s.cardHeader}>
                       <View style={s.cardHeaderLeft}>
                         <Text style={[s.tierName, { color }]}>{tier}</Text>
@@ -147,6 +144,13 @@ const MembershipModal: React.FC<Props> = ({
                         {f}
                       </Text>
                     ))}
+                    {isCurrent && (
+                      <View style={[s.currentBadge, { borderColor: color }]}>
+                        <Text style={[s.currentBadgeText, { color }]}>
+                          Current
+                        </Text>
+                      </View>
+                    )}
                   </TouchableOpacity>
                 );
               },
@@ -156,11 +160,23 @@ const MembershipModal: React.FC<Props> = ({
           <TouchableOpacity
             style={[s.cta, { backgroundColor: ctaColor() }]}
             onPress={() => {
-              onUpgrade(selected);
-              onClose();
+              if (selected === "Silver") {
+                // Free tier — no checkout needed
+                onUpgrade(selected);
+                onClose();
+              } else if (selected === currentTier) {
+                // Already on this tier — just close
+                onClose();
+              } else {
+                // Paid upgrade — go to checkout
+                onUpgrade(selected);
+                onClose();
+              }
             }}
           >
-            <Text style={[s.ctaText, { color: ctaTextColor }]}>{ctaLabel}</Text>
+            <Text style={[s.ctaText, { color: ctaTextColor }]}>
+              {ctaLabel()}
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onClose} style={s.dismissBtn}>
@@ -214,7 +230,8 @@ const s = StyleSheet.create({
     position: "relative",
   },
   currentBadge: {
-    position: "absolute",
+    // position: "absolute",
+    alignSelf: "flex-end",
     top: 12,
     right: 12,
     borderWidth: 1,
