@@ -31,6 +31,18 @@
       "eas": {
         "projectId": "965044b1-71fc-4df6-bc58-797ff0a75d72"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": [
+              "https://maven.pkg.github.com/arthenica/ffmpeg-kit"
+            ]
+          }
+        }
+      ]
+    ]
   }
 }
