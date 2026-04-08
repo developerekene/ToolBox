@@ -33,7 +33,7 @@ const PLANS: {
     color: "#94A3B8",
     bg: "#1E2A3A",
     features: [
-      "Crop Tool, Word Counter, Translator",
+      "Crop Tool, Word Counter",
       "Scientific & BMI Calculator",
       "Unit & Tip Calculator",
       "QR Code Generator",
@@ -41,7 +41,7 @@ const PLANS: {
   },
   {
     tier: "Gold",
-    price: "$4.99",
+    price: "£4.12",
     period: "/ mo",
     color: "#F59E0B",
     bg: "#1E2A1A",
@@ -49,13 +49,13 @@ const PLANS: {
     features: [
       "Everything in Silver",
       "PDF Scanner & QR Scanner",
-      "Image Compress",
+      "Image Compress & Translator",
       "Loan & Discount Calculator",
     ],
   },
   {
     tier: "Platinum",
-    price: "$9.99",
+    price: "£16.03",
     period: "/ mo",
     color: "#A78BFA",
     bg: "#1A1A2E",

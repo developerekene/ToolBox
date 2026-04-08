@@ -114,7 +114,7 @@ const tools = [
     title: "Translator",
     icon: "language",
     color: "#EC4899",
-    requiredTier: "Silver",
+    requiredTier: "Gold",
   },
   // {
   //   id: "9",

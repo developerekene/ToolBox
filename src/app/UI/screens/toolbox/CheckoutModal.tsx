@@ -24,8 +24,8 @@ type Step = "checkout" | "processing" | "success";
 
 const TIER_PRICES: Record<Tier, string> = {
   Silver: "0.00",
-  Gold: "4.99",
-  Platinum: "9.99",
+  Gold: "4.12",
+  Platinum: "16.03",
 };
 
 const TIER_COLORS: Record<Tier, string> = {
@@ -36,7 +36,7 @@ const TIER_COLORS: Record<Tier, string> = {
 
 const TIER_FEATURES: Record<Tier, string[]> = {
   Silver: [
-    "Crop Tool, Word Counter, Translator",
+    "Crop Tool, Word Counter",
     "Scientific & BMI Calculator",
     "Unit & Tip Calculator",
     "QR Code Generator",
@@ -44,7 +44,7 @@ const TIER_FEATURES: Record<Tier, string[]> = {
   Gold: [
     "Everything in Silver",
     "PDF Scanner & QR Scanner",
-    "Image Compress",
+    "Image Compress & Translator",
     "Loan & Discount Calculator",
   ],
   Platinum: [
@@ -97,11 +97,11 @@ const CheckoutModal: React.FC<Props> = ({
     if (paymentMethod !== "card") return true;
     const newErrors: Record<string, string> = {};
     if (cardName.trim().length < 3)
-      newErrors.cardName = "Enter cardholder name";
-    if (cardNumber.replace(/\s/g, "").length < 16)
-      newErrors.cardNumber = "Enter a valid 16-digit card number";
-    if (expiry.length < 5) newErrors.expiry = "Enter expiry (MM/YY)";
-    if (cvv.length < 3) newErrors.cvv = "Enter CVV";
+      newErrors.cardName = "Enter Payee Email";
+    // if (cardNumber.replace(/\s/g, "").length < 16)
+    //   newErrors.cardNumber = "Enter a valid 16-digit card number";
+    // if (expiry.length < 5) newErrors.expiry = "Enter expiry (MM/YY)";
+    // if (cvv.length < 3) newErrors.cvv = "Enter CVV";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -116,9 +116,9 @@ const CheckoutModal: React.FC<Props> = ({
   const handlePay = () => {
     if (paymentMethod === "paypal") {
       // Open PayPal externally — don't process internally
-      import("react-native").then(({ Linking }) => {
-        Linking.openURL("https://www.paypal.com/checkoutnow"); // replace with your real PayPal checkout URL
-      });
+      // import("react-native").then(({ Linking }) => {
+      //   Linking.openURL("https://www.paypal.com/checkoutnow"); // replace with your real PayPal checkout URL
+      // });
       return;
     }
 
@@ -150,7 +150,7 @@ const CheckoutModal: React.FC<Props> = ({
             </Text>
           </View>
           <Text style={s.summaryPrice}>
-            ${price}
+            £{price}
             <Text style={s.summaryPeriod}>/mo</Text>
           </Text>
         </View>
@@ -168,7 +168,7 @@ const CheckoutModal: React.FC<Props> = ({
 
         <View style={s.summaryRow}>
           <Text style={s.totalLabel}>Total today</Text>
-          <Text style={[s.totalPrice, { color: tierColor }]}>${price}</Text>
+          <Text style={[s.totalPrice, { color: tierColor }]}>£{price}</Text>
         </View>
       </View>
 
@@ -232,12 +232,13 @@ const CheckoutModal: React.FC<Props> = ({
       {paymentMethod === "card" && (
         <View style={s.cardForm}>
           <View style={s.inputGroup}>
-            <Text style={s.inputLabel}>Cardholder name</Text>
+            <Text style={s.inputLabel}>Payee Email</Text>
             <TextInput
               style={[s.input, errors.cardName && s.inputError]}
-              placeholder="John Doe"
+              placeholder="Email"
               placeholderTextColor="#4B5563"
               value={cardName}
+              keyboardType={"email-address"}
               onChangeText={setCardName}
             />
             {errors.cardName && (
@@ -245,7 +246,7 @@ const CheckoutModal: React.FC<Props> = ({
             )}
           </View>
 
-          <View style={s.inputGroup}>
+          {/* <View style={s.inputGroup}>
             <Text style={s.inputLabel}>Card number</Text>
             <View style={[s.inputRow, errors.cardNumber && s.inputError]}>
               <TextInput
@@ -299,7 +300,7 @@ const CheckoutModal: React.FC<Props> = ({
               />
               {errors.cvv && <Text style={s.errorText}>{errors.cvv}</Text>}
             </View>
-          </View>
+          </View> */}
         </View>
       )}
 
@@ -335,7 +336,7 @@ const CheckoutModal: React.FC<Props> = ({
         >
           {paymentMethod === "paypal"
             ? "Continue to PayPal"
-            : `Pay $${price} / month`}
+            : `Proceed with £${price} / month`}
         </Text>
       </TouchableOpacity>
 
