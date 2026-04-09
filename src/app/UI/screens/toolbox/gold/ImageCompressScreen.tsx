@@ -583,7 +583,7 @@ const ImageCompressorScreen: React.FC = () => {
             <ActivityIndicator size="small" color="#000105" />
           ) : (
             <>
-              <Ionicons name="download-outline" size={18} color="#000105" />
+              <Ionicons name="download-outline" size={18} color="#fff" />
               <Text style={styles.saveBtnText}>Save</Text>
             </>
           )}

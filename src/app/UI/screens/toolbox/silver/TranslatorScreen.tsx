@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
 interface Language {
   code: string;
@@ -101,6 +102,9 @@ const TranslatorScreen: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View>
+        <VersionBadge version="0.03" />
+      </View>
       <View style={styles.header}>
         <Text style={styles.headerText}>Translator</Text>
         <Text style={styles.subheaderText}>
