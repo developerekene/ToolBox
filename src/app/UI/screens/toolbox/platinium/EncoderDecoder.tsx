@@ -12,8 +12,9 @@ import {
   Clipboard,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
-// ── Types ─────────────────────────────────────────────────────────
+// ── Types
 type Mode = "encode" | "decode";
 type SchemeKey =
   | "base64"
@@ -34,7 +35,7 @@ interface Scheme {
   decode: (input: string) => string;
 }
 
-// ── Morse code map ────────────────────────────────────────────────
+// ── Morse code map
 const MORSE: Record<string, string> = {
   A: ".-",
   B: "-...",
@@ -82,7 +83,7 @@ const MORSE_REV: Record<string, string> = (function () {
   return rev;
 })();
 
-// ── HTML entities map ─────────────────────────────────────────────
+// ── HTML entities map
 const HTML_ENTITIES: Record<string, string> = {
   "&": "&amp;",
   "<": "&lt;",
@@ -264,7 +265,7 @@ const SCHEMES: Record<SchemeKey, Scheme> = {
 
 const SCHEME_KEYS = Object.keys(SCHEMES) as SchemeKey[];
 
-// ── Component ─────────────────────────────────────────────────────
+// ── Component
 const EncoderDecoder: React.FC = () => {
   const [activeScheme, setActiveScheme] = useState<SchemeKey>("base64");
   const [mode, setMode] = useState<Mode>("encode");
@@ -334,6 +335,9 @@ const EncoderDecoder: React.FC = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <View>
+          <VersionBadge version="0.03" />
+        </View>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Encoder / Decoder</Text>
@@ -618,7 +622,7 @@ const EncoderDecoder: React.FC = () => {
           <View style={styles.infoRow}>
             <Ionicons name="shield-checkmark" size={20} color="#10B981" />
             <Text style={styles.infoText}>
-              All encoding is done locally on your device — no data is sent
+              All encoding is done locally on your device, no data is sent
               anywhere.
             </Text>
           </View>
@@ -630,7 +634,6 @@ const EncoderDecoder: React.FC = () => {
 
 export default EncoderDecoder;
 
-// ─── STYLES ───────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   container: {
     flex: 1,
