@@ -15,6 +15,7 @@ import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import VersionBadge from "../../../component/VersionBadge";
 
 const { width } = Dimensions.get("window");
 
@@ -221,11 +222,15 @@ const PdfScannerScreen: React.FC = () => {
     return (
       <View style={styles.container}>
         {/* Hero Section */}
+
         <View style={styles.heroSection}>
           <View style={styles.scannerRingOuter}>
             <View style={styles.scannerRingInner}>
               <FontAwesome5 name="file-pdf" size={44} color="#F59E0B" />
             </View>
+          </View>
+          <View>
+            <VersionBadge version="0.03" />
           </View>
           <Text style={styles.heroTitle}>PDF Scanner</Text>
           <Text style={styles.heroSubtitle}>

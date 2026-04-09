@@ -17,6 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import * as ImageManipulator from "expo-image-manipulator";
 import * as Sharing from "expo-sharing";
+import VersionBadge from "../../../component/VersionBadge";
 
 const { width } = Dimensions.get("window");
 
@@ -249,6 +250,11 @@ const ImageCompressorScreen: React.FC = () => {
               />
             </View>
           </View>
+
+          <View>
+            <VersionBadge version="0.03" />
+          </View>
+
           <Text style={styles.heroTitle}>Image Compressor</Text>
           <Text style={styles.heroSubtitle}>
             Reduce image file size without{"\n"}sacrificing visible quality

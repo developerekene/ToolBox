@@ -9,6 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
 const WordCounterScreen: React.FC = () => {
   const [text, setText] = useState("");
@@ -57,6 +58,9 @@ const WordCounterScreen: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View>
+        <VersionBadge version="0.03" />
+      </View>
       <View style={styles.header}>
         <Text style={styles.headerText}>Word Counter</Text>
         <Text style={styles.subheaderText}>
