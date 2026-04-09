@@ -18,8 +18,8 @@ import VersionBadge from "../../../component/VersionBadge";
 type Mode = "encode" | "decode";
 type SchemeKey =
   | "base64"
-  | "url"
-  | "html"
+  // | "url"
+  // | "html"
   | "hex"
   | "binary"
   | "rot13"
@@ -99,7 +99,7 @@ const HTML_ENTITIES_REV: Record<string, string> = (function () {
   return rev;
 })();
 
-// ── Schemes ───────────────────────────────────────────────────────
+// ── Schemes
 const SCHEMES: Record<SchemeKey, Scheme> = {
   base64: {
     label: "Base64",
@@ -121,38 +121,38 @@ const SCHEMES: Record<SchemeKey, Scheme> = {
       }
     },
   },
-  url: {
-    label: "URL",
-    icon: "link-outline",
-    color: "#10B981",
-    description: "Percent-encode special characters for URLs",
-    encode: (s) => {
-      try {
-        return encodeURIComponent(s);
-      } catch {
-        return "Error: invalid input";
-      }
-    },
-    decode: (s) => {
-      try {
-        return decodeURIComponent(s);
-      } catch {
-        return "Error: invalid URL-encoded string";
-      }
-    },
-  },
-  html: {
-    label: "HTML",
-    icon: "globe-outline",
-    color: "#F59E0B",
-    description: "Escape/unescape HTML special characters",
-    encode: (s) => s.replace(/[&<>"']/g, (c) => HTML_ENTITIES[c] || c),
-    decode: (s) =>
-      s.replace(
-        /&amp;|&lt;|&gt;|&quot;|&#39;/g,
-        (e) => HTML_ENTITIES_REV[e] || e,
-      ),
-  },
+  // url: {
+  //   label: "URL",
+  //   icon: "link-outline",
+  //   color: "#10B981",
+  //   description: "Percent-encode special characters for URLs",
+  //   encode: (s) => {
+  //     try {
+  //       return encodeURIComponent(s);
+  //     } catch {
+  //       return "Error: invalid input";
+  //     }
+  //   },
+  //   decode: (s) => {
+  //     try {
+  //       return decodeURIComponent(s);
+  //     } catch {
+  //       return "Error: invalid URL-encoded string";
+  //     }
+  //   },
+  // },
+  // html: {
+  //   label: "HTML",
+  //   icon: "globe-outline",
+  //   color: "#F59E0B",
+  //   description: "Escape/unescape HTML special characters",
+  //   encode: (s) => s.replace(/[&<>"']/g, (c) => HTML_ENTITIES[c] || c),
+  //   decode: (s) =>
+  //     s.replace(
+  //       /&amp;|&lt;|&gt;|&quot;|&#39;/g,
+  //       (e) => HTML_ENTITIES_REV[e] || e,
+  //     ),
+  // },
   hex: {
     label: "Hex",
     icon: "terminal-outline",
@@ -342,7 +342,7 @@ const EncoderDecoder: React.FC = () => {
         <View style={styles.header}>
           <Text style={styles.headerText}>Encoder / Decoder</Text>
           <Text style={styles.subheaderText}>
-            Transform text across 8 encoding schemes
+            Transform text across 6 encoding schemes
           </Text>
         </View>
 
