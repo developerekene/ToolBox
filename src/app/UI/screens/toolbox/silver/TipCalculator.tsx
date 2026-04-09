@@ -85,6 +85,7 @@ export default function App() {
         <Text style={styles.cardTitle}>Tip Calculator</Text>
 
         {/* Currency + Bill Row */}
+        {/* TODO  change currency bg and text colors */}
         <View style={styles.field}>
           <Text style={styles.label}>Bill amount</Text>
           <View style={styles.billRow}>
@@ -93,7 +94,7 @@ export default function App() {
                 selectedValue={currencyCode}
                 onValueChange={(val) => setCurrencyCode(val)}
                 style={styles.picker}
-                dropdownIconColor={COLORS.muted}
+                dropdownIconColor={COLORS.text}
               >
                 {CURRENCIES.map((c) => (
                   <Picker.Item key={c.code} label={c.label} value={c.code} />
@@ -216,21 +217,21 @@ export default function App() {
 }
 
 const COLORS = {
-  bg: "#a59e9e",
-  surface: "#4392e0",
-  border: "#E5E7EB",
-  borderActive: "#378ADD",
-  text: "#111827",
-  muted: "#6B7280",
-  accent: "#185FA5",
-  accentBg: "#E6F1FB",
-  accentText: "#0C447C",
+  bg: "#0F172A",
+  surface: "#1E293B",
+  border: "#334155",
+  borderActive: "#60A5FA",
+  text: "#F1F5F9",
+  muted: "#94A3B8",
+  accent: "#3B82F6", // vibrant blue
+  accentBg: "#1D4ED8",
+  accentText: "#DBEAFE",
 };
 
 const styles = StyleSheet.create({
   screen: {
     flexGrow: 1,
-    backgroundColor: "#F3F4F6",
+    backgroundColor: "black",
     padding: 20,
     justifyContent: "center",
   },
@@ -248,7 +249,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   field: { marginBottom: 20 },
-  label: { fontSize: 13, color: COLORS.muted, marginBottom: 8 },
+  label: { fontSize: 13, color: COLORS.text, marginBottom: 8 },
   billRow: { flexDirection: "row", gap: 8, alignItems: "stretch" },
   pickerWrap: {
     borderWidth: 0.5,
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     borderRadius: 8,
     paddingHorizontal: 12,
-    backgroundColor: COLORS.bg,
+    backgroundColor: COLORS.surface,
   },
   currencySymbol: { fontSize: 16, color: COLORS.muted, marginRight: 4 },
   input: { flex: 1, fontSize: 16, color: COLORS.text, paddingVertical: 10 },

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
 type CategoryKey =
   | "length"
@@ -360,6 +361,9 @@ const UnitConverter: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View>
+        <VersionBadge version="0.03" />
+      </View>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Unit Converter</Text>
