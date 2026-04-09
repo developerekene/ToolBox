@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
+import VersionBadge from "../../../component/VersionBadge";
 
 const CropToolScreen: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -115,6 +116,9 @@ const CropToolScreen: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View>
+        <VersionBadge version="0.03" />
+      </View>
       <View style={styles.header}>
         <Text style={styles.headerText}>Image Crop Tool</Text>
         <Text style={styles.subheaderText}>

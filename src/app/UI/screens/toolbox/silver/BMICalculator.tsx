@@ -9,6 +9,7 @@ import {
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
 type UnitSystem = "metric" | "imperial";
 
@@ -109,6 +110,9 @@ const BMICalculator: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View>
+        <VersionBadge version="0.03" />
+      </View>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>BMI Calculator</Text>
