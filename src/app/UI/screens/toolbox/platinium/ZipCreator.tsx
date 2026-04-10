@@ -15,6 +15,7 @@ import * as DocumentPicker from "expo-document-picker";
 import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
+import VersionBadge from "../../../component/VersionBadge";
 
 // ── Types ─────────────────────────────────────────────────────────
 interface PickedFile {
@@ -234,6 +235,9 @@ const ZipCreator: React.FC = () => {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
+        <View>
+          <VersionBadge version="0.03" />
+        </View>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Zip Creator</Text>

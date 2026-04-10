@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
+import VersionBadge from "../../../component/VersionBadge";
 
 // ── Types
 interface Currency {
@@ -184,6 +185,9 @@ const CurrencyConverter: React.FC = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <View>
+          <VersionBadge version="0.03" />
+        </View>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Currency Converter</Text>
@@ -423,9 +427,12 @@ const CurrencyConverter: React.FC = () => {
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
             <Ionicons name="globe-outline" size={20} color="#10B981" />
-            <Text style={styles.infoText}>
+            {/* <Text style={styles.infoText}>
               Powered by Frankfurter.app — free, open-source exchange rates
               updated daily from the ECB.
+            </Text> */}
+            <Text style={styles.infoText}>
+              Exchange rates updated daily from the ECB.
             </Text>
           </View>
           <View style={styles.infoRow}>

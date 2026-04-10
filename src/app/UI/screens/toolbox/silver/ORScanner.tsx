@@ -1,5 +1,3 @@
-
-
 import React, { useState, useRef, useEffect } from "react";
 import {
   View,
@@ -16,6 +14,7 @@ import {
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import VersionBadge from "../../../component/VersionBadge";
 
 const { width } = Dimensions.get("window");
 const FRAME_SIZE = width * 0.7;
@@ -607,6 +606,9 @@ const ORScanner: React.FC = () => {
         {/* Top */}
         <View style={styles.overlayTop}>
           {/* Header bar */}
+          <View>
+            <VersionBadge version="0.03" />
+          </View>
           <View style={styles.scanHeader}>
             <Text style={styles.scanTitle}>QR Scanner</Text>
             <TouchableOpacity style={styles.historyBtn} onPress={openHistory}>
@@ -1135,7 +1137,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 });
-
 
 // import React, { useState, useEffect } from "react";
 // import { Text, View, Button, StyleSheet } from "react-native";

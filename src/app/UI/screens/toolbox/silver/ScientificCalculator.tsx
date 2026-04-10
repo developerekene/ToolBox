@@ -9,6 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
 type ButtonType = "number" | "operator" | "scientific" | "action" | "equals";
 
@@ -255,6 +256,9 @@ const ScientificCalculator: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View>
+        <VersionBadge version="0.03" />
+      </View>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Calculator</Text>

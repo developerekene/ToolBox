@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import QRCode from "react-native-qrcode-svg";
 import ViewShot, { captureRef } from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
+import VersionBadge from "../../../component/VersionBadge";
 
 const QRGeneratorScreen: React.FC = () => {
   const [inputText, setInputText] = useState("");
@@ -121,6 +122,9 @@ const QRGeneratorScreen: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View>
+        <VersionBadge version="0.03" />
+      </View>
       <View style={styles.header}>
         <Text style={styles.headerText}>QR Code Generator</Text>
         <Text style={styles.subheaderText}>

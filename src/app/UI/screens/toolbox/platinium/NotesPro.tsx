@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import VersionBadge from "../../../component/VersionBadge";
 
 const { width } = Dimensions.get("window");
 
@@ -413,6 +414,11 @@ const NotesPro: React.FC = () => {
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       {/* Header */}
+      {/* <View>
+        <VersionBadge version="0.03" />
+      </View> */}
+      <VersionBadge version="0.03" />
+
       <View style={styles.listHeader}>
         <View>
           <Text style={styles.listTitle}>Notes</Text>
