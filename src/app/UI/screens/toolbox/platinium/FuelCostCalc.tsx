@@ -392,7 +392,7 @@ const FuelCostCalc: React.FC = () => {
           </View>
           {/* Currency quick pick */}
           <View style={styles.unitToggle}>
-            {["$", "£", "€"].map((s) => (
+            {["$", "£", "€", "₦"].map((s) => (
               <TouchableOpacity
                 key={s}
                 style={[styles.unitBtn, currency === s && styles.unitBtnActive]}
