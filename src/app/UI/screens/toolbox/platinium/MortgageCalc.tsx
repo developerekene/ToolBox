@@ -11,8 +11,9 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
-// ── Types ─────────────────────────────────────────────────────────
+// ── Types
 type MortgageType = "fixed" | "interest_only";
 type RepayFreq = "monthly" | "fortnightly" | "weekly";
 
@@ -36,7 +37,7 @@ interface ScheduleRow {
   balance: number;
 }
 
-// ── Constants ─────────────────────────────────────────────────────
+// ── Constants
 const TERM_PRESETS = [10, 15, 20, 25, 30];
 const RATE_PRESETS = [3, 4, 5, 6, 7, 8];
 const DEPOSIT_PRESETS = [5, 10, 15, 20, 25, 30]; // %
@@ -50,7 +51,7 @@ const FREQ_CONFIG: Record<
   weekly: { label: "Weekly", periods: 52, icon: "time-outline" },
 };
 
-// ── Helpers ───────────────────────────────────────────────────────
+// ── Helpers
 const fmtMoney = (v: number, sym = "$"): string => {
   if (v >= 1e9) return sym + (v / 1e9).toFixed(2) + "B";
   if (v >= 1e6) return sym + (v / 1e6).toFixed(2) + "M";
@@ -74,7 +75,7 @@ const fmtFull = (v: number, sym = "$"): string =>
 const pctOf = (part: number, total: number): string =>
   total === 0 ? "0" : ((part / total) * 100).toFixed(1);
 
-// ── Component ─────────────────────────────────────────────────────
+// ── Component
 const MortgageCalc: React.FC = () => {
   // Inputs
   const [currency, setCurrency] = useState("$");
@@ -105,7 +106,7 @@ const MortgageCalc: React.FC = () => {
     }).start();
   };
 
-  // ── Getters ───────────────────────────────────────────────────
+  // ── Getters
   const getRate = (): number =>
     selectedRate !== null ? selectedRate : parseFloat(interestRate) || 0;
   const getTerm = (): number =>
@@ -120,7 +121,7 @@ const MortgageCalc: React.FC = () => {
     getTerm() > 0 &&
     getDepPct() >= 0;
 
-  // ── Calculate ─────────────────────────────────────────────────
+  // ── Calculate
   const calculate = () => {
     if (!isValid()) {
       Alert.alert("Missing Info", "Please fill in all required fields.");
@@ -231,6 +232,9 @@ const MortgageCalc: React.FC = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <View>
+          <VersionBadge version="0.03" />
+        </View>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Mortgage Calculator</Text>
