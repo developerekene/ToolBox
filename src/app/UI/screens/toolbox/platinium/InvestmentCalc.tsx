@@ -9,10 +9,12 @@ import {
   Animated,
   Platform,
   Alert,
+  Modal,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
-// ── Types ─────────────────────────────────────────────────────────
+// ── Types
 type CompoundFreq =
   | "annually"
   | "semiannually"
@@ -20,6 +22,13 @@ type CompoundFreq =
   | "monthly"
   | "daily";
 type CalcMode = "growth" | "goal" | "inflation";
+
+interface Currency {
+  code: string;
+  symbol: string;
+  label: string;
+  flag: string;
+}
 
 interface GrowthResult {
   futureValue: number;
@@ -37,6 +46,15 @@ interface ScheduleRow {
 }
 
 // ── Constants ─────────────────────────────────────────────────────
+const CURRENCIES: Currency[] = [
+  { code: "USD", symbol: "$", label: "US Dollar", flag: "🇺🇸" },
+  { code: "EUR", symbol: "€", label: "Euro", flag: "🇪🇺" },
+  { code: "GBP", symbol: "£", label: "British Pound", flag: "🇬🇧" },
+  { code: "NGN", symbol: "₦", label: "Nigerian Naira", flag: "🇳🇬" },
+  { code: "CAD", symbol: "CA$", label: "Canadian Dollar", flag: "🇨🇦" },
+  { code: "AUD", symbol: "A$", label: "Australian Dollar", flag: "🇦🇺" },
+];
+
 const FREQ_OPTIONS: { label: string; value: CompoundFreq; n: number }[] = [
   { label: "Annually", value: "annually", n: 1 },
   { label: "Semi-Annual", value: "semiannually", n: 2 },
@@ -49,31 +67,39 @@ const TERM_PRESETS = [1, 3, 5, 10, 15, 20, 30];
 const RATE_PRESETS = [3, 5, 7, 8, 10, 12];
 
 // ── Helpers ───────────────────────────────────────────────────────
-const fmtMoney = (v: number): string => {
-  if (v >= 1000000000) return "$" + (v / 1000000000).toFixed(2) + "B";
-  if (v >= 1000000) return "$" + (v / 1000000).toFixed(2) + "M";
-  if (v >= 1000) return "$" + (v / 1000).toFixed(1) + "K";
-  return (
-    "$" +
+const makeFmtMoney =
+  (symbol: string) =>
+  (v: number): string => {
+    if (v >= 1000000000) return `${symbol}${(v / 1000000000).toFixed(2)}B`;
+    if (v >= 1000000) return `${symbol}${(v / 1000000).toFixed(2)}M`;
+    if (v >= 1000) return `${symbol}${(v / 1000).toFixed(1)}K`;
+    return (
+      symbol +
+      v.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    );
+  };
+
+const makeFmtFull =
+  (symbol: string) =>
+  (v: number): string =>
+    symbol +
     v.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    })
-  );
-};
-
-const fmtFull = (v: number): string =>
-  "$" +
-  v.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+    });
 
 const pct = (part: number, total: number): string =>
   total === 0 ? "0" : ((part / total) * 100).toFixed(1);
 
 // ── Component ─────────────────────────────────────────────────────
 const InvestmentCalc: React.FC = () => {
+  // Currency
+  const [currency, setCurrency] = useState<Currency>(CURRENCIES[0]);
+  const [showCurrencyModal, setShowCurrencyModal] = useState(false);
+
   // Inputs
   const [mode, setMode] = useState<CalcMode>("growth");
   const [principal, setPrincipal] = useState("");
@@ -105,6 +131,9 @@ const InvestmentCalc: React.FC = () => {
   const resultAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
+  const fmtMoney = makeFmtMoney(currency.symbol);
+  const fmtFull = makeFmtFull(currency.symbol);
+
   const animateResult = () => {
     resultAnim.setValue(0);
     Animated.timing(resultAnim, {
@@ -114,7 +143,7 @@ const InvestmentCalc: React.FC = () => {
     }).start();
   };
 
-  // ── Getters ────────────────────────────────────────────────────
+  // ── Getters
   const getRate = (): number =>
     selectedRate !== null ? selectedRate : parseFloat(rate) || 0;
   const getTerm = (): number =>
@@ -148,10 +177,7 @@ const InvestmentCalc: React.FC = () => {
     const n = getFreqN();
     const t = getTerm();
 
-    // FV of lump sum: P(1 + r/n)^(nt)
     const fvLump = P * Math.pow(1 + r / n, n * t);
-
-    // FV of periodic contributions (monthly → convert to per-period)
     const periodsPerYear = n;
     const contribPerPeriod = MC * (12 / periodsPerYear);
     const totalPeriods = n * t;
@@ -169,7 +195,6 @@ const InvestmentCalc: React.FC = () => {
     const totalContributions = P + MC * 12 * t;
     const totalInterest = futureValue - totalContributions;
 
-    // Year-by-year schedule
     const schedule: ScheduleRow[] = [];
     for (let y = 1; y <= Math.min(t, 30); y++) {
       const bal =
@@ -276,9 +301,6 @@ const InvestmentCalc: React.FC = () => {
     setResult(null);
   };
 
-  const hasResult =
-    result !== null || goalResult !== null || inflationResult !== null;
-
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <ScrollView
@@ -286,11 +308,113 @@ const InvestmentCalc: React.FC = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <View>
+          <VersionBadge version="0.03" />
+        </View>
+
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Investment Calculator</Text>
           <Text style={styles.subheaderText}>Plan your financial future</Text>
         </View>
+
+        {/* Currency Selector */}
+        <View style={styles.section}>
+          <Text style={styles.label}>Currency</Text>
+          <TouchableOpacity
+            style={styles.currencySelector}
+            onPress={() => setShowCurrencyModal(true)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.currencyFlag}>{currency.flag}</Text>
+            <View style={styles.currencySelectorInfo}>
+              <Text style={styles.currencyCode}>{currency.code}</Text>
+              <Text style={styles.currencyLabel}>{currency.label}</Text>
+            </View>
+            <View style={styles.currencySelectorRight}>
+              <Text style={styles.currencySymbolPreview}>
+                {currency.symbol}
+              </Text>
+              <Ionicons name="chevron-down" size={18} color="#64748B" />
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Currency Modal */}
+        <Modal
+          visible={showCurrencyModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setShowCurrencyModal(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowCurrencyModal(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Currency</Text>
+                <TouchableOpacity onPress={() => setShowCurrencyModal(false)}>
+                  <Ionicons name="close" size={22} color="#94A3B8" />
+                </TouchableOpacity>
+              </View>
+
+              {CURRENCIES.map((cur, index) => {
+                const isSelected = cur.code === currency.code;
+                return (
+                  <TouchableOpacity
+                    key={cur.code}
+                    style={[
+                      styles.modalItem,
+                      isSelected && styles.modalItemActive,
+                      index === CURRENCIES.length - 1 && {
+                        borderBottomWidth: 0,
+                      },
+                    ]}
+                    onPress={() => {
+                      setCurrency(cur);
+                      setShowCurrencyModal(false);
+                      setResult(null);
+                      setGoalResult(null);
+                      setInflationResult(null);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.modalItemFlag}>{cur.flag}</Text>
+                    <View style={styles.modalItemInfo}>
+                      <Text
+                        style={[
+                          styles.modalItemCode,
+                          isSelected && styles.modalItemCodeActive,
+                        ]}
+                      >
+                        {cur.code}
+                      </Text>
+                      <Text style={styles.modalItemLabel}>{cur.label}</Text>
+                    </View>
+                    <Text
+                      style={[
+                        styles.modalItemSymbol,
+                        isSelected && styles.modalItemSymbolActive,
+                      ]}
+                    >
+                      {cur.symbol}
+                    </Text>
+                    {isSelected && (
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={20}
+                        color="#10B981"
+                        style={{ marginLeft: 8 }}
+                      />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </TouchableOpacity>
+        </Modal>
 
         {/* Mode Tabs */}
         <View style={styles.modeTabs}>
@@ -337,7 +461,7 @@ const InvestmentCalc: React.FC = () => {
             <View style={styles.section}>
               <Text style={styles.label}>Initial Investment</Text>
               <View style={styles.inputWrapper}>
-                <Text style={styles.currSymbol}>$</Text>
+                <Text style={styles.currSymbol}>{currency.symbol}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="0.00"
@@ -355,7 +479,7 @@ const InvestmentCalc: React.FC = () => {
             <View style={styles.section}>
               <Text style={styles.label}>Monthly Contribution</Text>
               <View style={styles.inputWrapper}>
-                <Text style={styles.currSymbol}>$</Text>
+                <Text style={styles.currSymbol}>{currency.symbol}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="0.00"
@@ -377,7 +501,7 @@ const InvestmentCalc: React.FC = () => {
           <View style={styles.section}>
             <Text style={styles.label}>Target Amount</Text>
             <View style={styles.inputWrapper}>
-              <Text style={styles.currSymbol}>$</Text>
+              <Text style={styles.currSymbol}>{currency.symbol}</Text>
               <TextInput
                 style={styles.input}
                 placeholder="e.g. 100000"
@@ -399,7 +523,7 @@ const InvestmentCalc: React.FC = () => {
             <View style={styles.section}>
               <Text style={styles.label}>Current Cost / Value</Text>
               <View style={styles.inputWrapper}>
-                <Text style={styles.currSymbol}>$</Text>
+                <Text style={styles.currSymbol}>{currency.symbol}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="e.g. 50000"
@@ -583,7 +707,7 @@ const InvestmentCalc: React.FC = () => {
           </View>
         </View>
 
-        {/* ── Compound Frequency (growth & goal only) ── */}
+        {/* ── Compound Frequency ── */}
         {mode !== "inflation" && (
           <View style={styles.section}>
             <Text style={styles.label}>Compound Frequency</Text>
@@ -634,7 +758,6 @@ const InvestmentCalc: React.FC = () => {
           <Animated.View
             style={[styles.resultSection, { opacity: resultAnim }]}
           >
-            {/* Hero banner */}
             <View style={styles.heroBanner}>
               <Text style={styles.heroBannerLabel}>Future Value</Text>
               <Text style={styles.heroBannerValue}>
@@ -645,10 +768,8 @@ const InvestmentCalc: React.FC = () => {
               </Text>
             </View>
 
-            {/* Breakdown */}
             <View style={styles.resultCard}>
               <Text style={styles.resultCardTitle}>Breakdown</Text>
-
               <View style={styles.resultRow}>
                 <Text style={styles.resultRowLabel}>Initial Investment</Text>
                 <Text style={styles.resultRowValue}>
@@ -675,7 +796,6 @@ const InvestmentCalc: React.FC = () => {
                 </Text>
               </View>
 
-              {/* Bar */}
               <View style={styles.barSection}>
                 <View style={styles.barTrack}>
                   <View
@@ -713,7 +833,6 @@ const InvestmentCalc: React.FC = () => {
               </View>
             </View>
 
-            {/* Summary tiles */}
             <View style={styles.tilesRow}>
               <View style={styles.tile}>
                 <Ionicons
@@ -738,7 +857,6 @@ const InvestmentCalc: React.FC = () => {
               </View>
             </View>
 
-            {/* Year-by-year schedule toggle */}
             <TouchableOpacity
               style={styles.scheduleToggle}
               onPress={() => setShowSchedule(!showSchedule)}
@@ -923,7 +1041,7 @@ const InvestmentCalc: React.FC = () => {
 
 export default InvestmentCalc;
 
-// ─── STYLES ───────────────────────────────────────────────────────
+// ─── STYLES
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#101828" },
   contentContainer: {
@@ -941,6 +1059,69 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   subheaderText: { fontSize: 15, color: "#CBD5E1", textAlign: "center" },
+
+  // ── Currency Selector ──
+  currencySelector: {
+    backgroundColor: "#1E293B",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#334155",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 12,
+  },
+  currencyFlag: { fontSize: 24 },
+  currencySelectorInfo: { flex: 1 },
+  currencyCode: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  currencyLabel: { color: "#64748B", fontSize: 12, marginTop: 2 },
+  currencySelectorRight: { flexDirection: "row", alignItems: "center", gap: 8 },
+  currencySymbolPreview: { color: "#10B981", fontSize: 18, fontWeight: "700" },
+
+  // ── Currency Modal ──
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "#00000088",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+  modalContainer: {
+    width: "100%",
+    backgroundColor: "#1E293B",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#334155",
+    overflow: "hidden",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#334155",
+  },
+  modalTitle: { color: "#fff", fontSize: 17, fontWeight: "700" },
+  modalItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#334155",
+    gap: 12,
+  },
+  modalItemActive: { backgroundColor: "#10B98112" },
+  modalItemFlag: { fontSize: 22 },
+  modalItemInfo: { flex: 1 },
+  modalItemCode: { color: "#E2E8F0", fontSize: 15, fontWeight: "700" },
+  modalItemCodeActive: { color: "#10B981" },
+  modalItemLabel: { color: "#64748B", fontSize: 12, marginTop: 2 },
+  modalItemSymbol: { color: "#475569", fontSize: 16, fontWeight: "600" },
+  modalItemSymbolActive: { color: "#10B981" },
 
   // Mode tabs
   modeTabs: {
@@ -1050,7 +1231,6 @@ const styles = StyleSheet.create({
 
   // Results
   resultSection: { gap: 12, marginBottom: 24 },
-
   heroBanner: {
     backgroundColor: "#0D2E22",
     borderRadius: 16,

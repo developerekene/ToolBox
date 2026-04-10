@@ -6,15 +6,36 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Modal,
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
 type DiscountMode = "percentage" | "fixed";
+
+interface Currency {
+  code: string;
+  symbol: string;
+  label: string;
+  flag: string;
+}
+
+const CURRENCIES: Currency[] = [
+  { code: "USD", symbol: "$", label: "US Dollar", flag: "🇺🇸" },
+  { code: "EUR", symbol: "€", label: "Euro", flag: "🇪🇺" },
+  { code: "GBP", symbol: "£", label: "British Pound", flag: "🇬🇧" },
+  { code: "NGN", symbol: "₦", label: "Nigerian Naira", flag: "🇳🇬" },
+  { code: "CAD", symbol: "CA$", label: "Canadian Dollar", flag: "🇨🇦" },
+  { code: "AUD", symbol: "A$", label: "Australian Dollar", flag: "🇦🇺" },
+];
 
 const PRESET_DISCOUNTS = [5, 10, 15, 20, 25, 30, 40, 50];
 
 const DiscountCalc: React.FC = () => {
+  const [currency, setCurrency] = useState<Currency>(CURRENCIES[0]);
+  const [showCurrencyModal, setShowCurrencyModal] = useState(false);
+
   const [originalPrice, setOriginalPrice] = useState("");
   const [discountMode, setDiscountMode] = useState<DiscountMode>("percentage");
   const [selectedPreset, setSelectedPreset] = useState<number | null>(null);
@@ -39,6 +60,14 @@ const DiscountCalc: React.FC = () => {
   const tax = parseFloat(taxRate) || 0;
   const isFormValid = originalPrice.trim() !== "" && discountValue > 0;
 
+  const sym = currency.symbol;
+
+  const fmt = (val: number) =>
+    val.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
   const calculate = () => {
     if (!isFormValid) return;
 
@@ -54,13 +83,7 @@ const DiscountCalc: React.FC = () => {
     const totalWithTax = finalPrice + taxAmount;
     const savings = price - finalPrice;
 
-    setResult({
-      discountAmount,
-      finalPrice,
-      savings,
-      taxAmount,
-      totalWithTax,
-    });
+    setResult({ discountAmount, finalPrice, savings, taxAmount, totalWithTax });
   };
 
   const clearAll = () => {
@@ -83,12 +106,6 @@ const DiscountCalc: React.FC = () => {
     setResult(null);
   };
 
-  const fmt = (val: number) =>
-    val.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-
   const savingsPercent =
     price > 0 && result ? ((result.savings / price) * 100).toFixed(1) : "0";
 
@@ -97,17 +114,113 @@ const DiscountCalc: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View>
+        <VersionBadge version="0.03" />
+      </View>
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Discount Calculator</Text>
         <Text style={styles.subheaderText}>Find out how much you save</Text>
       </View>
 
+      {/* Currency Selector */}
+      <View style={styles.section}>
+        <Text style={styles.label}>Currency</Text>
+        <TouchableOpacity
+          style={styles.currencySelector}
+          onPress={() => setShowCurrencyModal(true)}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.currencyFlag}>{currency.flag}</Text>
+          <View style={styles.currencySelectorInfo}>
+            <Text style={styles.currencyCode}>{currency.code}</Text>
+            <Text style={styles.currencyLabel}>{currency.label}</Text>
+          </View>
+          <View style={styles.currencySelectorRight}>
+            <Text style={styles.currencySymbolPreview}>{currency.symbol}</Text>
+            <Ionicons name="chevron-down" size={18} color="#64748B" />
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* Currency Modal */}
+      <Modal
+        visible={showCurrencyModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowCurrencyModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowCurrencyModal(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Currency</Text>
+              <TouchableOpacity onPress={() => setShowCurrencyModal(false)}>
+                <Ionicons name="close" size={22} color="#94A3B8" />
+              </TouchableOpacity>
+            </View>
+
+            {CURRENCIES.map((cur, index) => {
+              const isSelected = cur.code === currency.code;
+              return (
+                <TouchableOpacity
+                  key={cur.code}
+                  style={[
+                    styles.modalItem,
+                    isSelected && styles.modalItemActive,
+                    index === CURRENCIES.length - 1 && { borderBottomWidth: 0 },
+                  ]}
+                  onPress={() => {
+                    setCurrency(cur);
+                    setShowCurrencyModal(false);
+                    setResult(null);
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.modalItemFlag}>{cur.flag}</Text>
+                  <View style={styles.modalItemInfo}>
+                    <Text
+                      style={[
+                        styles.modalItemCode,
+                        isSelected && styles.modalItemCodeActive,
+                      ]}
+                    >
+                      {cur.code}
+                    </Text>
+                    <Text style={styles.modalItemLabel}>{cur.label}</Text>
+                  </View>
+                  <Text
+                    style={[
+                      styles.modalItemSymbol,
+                      isSelected && styles.modalItemSymbolActive,
+                    ]}
+                  >
+                    {cur.symbol}
+                  </Text>
+                  {isSelected && (
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={20}
+                      color="#10B981"
+                      style={{ marginLeft: 8 }}
+                    />
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
       {/* Original Price */}
       <View style={styles.section}>
         <Text style={styles.label}>Original Price</Text>
         <View style={styles.inputWrapper}>
-          <Text style={styles.currencySymbol}>$</Text>
+          <Text style={styles.currencySymbol}>{sym}</Text>
           <TextInput
             style={styles.priceInput}
             placeholder="0.00"
@@ -175,7 +288,7 @@ const DiscountCalc: React.FC = () => {
                 discountMode === "fixed" && styles.modeTextActive,
               ]}
             >
-              Fixed Amount ($)
+              Fixed Amount ({sym})
             </Text>
           </TouchableOpacity>
         </View>
@@ -189,7 +302,6 @@ const DiscountCalc: React.FC = () => {
             : "Discount Amount"}
         </Text>
 
-        {/* Presets — only for percentage mode */}
         {discountMode === "percentage" && (
           <View style={styles.presetGrid}>
             {PRESET_DISCOUNTS.map((val) => (
@@ -215,8 +327,10 @@ const DiscountCalc: React.FC = () => {
           </View>
         )}
 
-        {/* Custom Input */}
         <View style={styles.inputWrapper}>
+          {discountMode === "fixed" && (
+            <Text style={styles.currencySymbol}>{sym}</Text>
+          )}
           <TextInput
             style={styles.discountInput}
             placeholder={
@@ -227,13 +341,13 @@ const DiscountCalc: React.FC = () => {
             onChangeText={handleCustomDiscount}
             keyboardType="decimal-pad"
           />
-          <Text style={styles.discountSymbol}>
-            {discountMode === "percentage" ? "%" : "$"}
-          </Text>
+          {discountMode === "percentage" && (
+            <Text style={styles.discountSymbol}>%</Text>
+          )}
         </View>
       </View>
 
-      {/* Tax Rate (optional) */}
+      {/* Tax Rate */}
       <View style={styles.section}>
         <Text style={styles.label}>
           Tax Rate <Text style={styles.optionalTag}>(optional)</Text>
@@ -274,13 +388,13 @@ const DiscountCalc: React.FC = () => {
       {/* Result Card */}
       {result !== null && (
         <View style={styles.resultSection}>
-          {/* Savings Banner */}
           <View style={styles.savingsBanner}>
             <Ionicons name="trending-down-outline" size={24} color="#10B981" />
             <View style={styles.savingsBannerText}>
               <Text style={styles.savingsBannerLabel}>You Save</Text>
               <Text style={styles.savingsBannerValue}>
-                ${fmt(result.savings)}{" "}
+                {sym}
+                {fmt(result.savings)}{" "}
                 <Text style={styles.savingsBannerPercent}>
                   ({savingsPercent}% off)
                 </Text>
@@ -288,11 +402,13 @@ const DiscountCalc: React.FC = () => {
             </View>
           </View>
 
-          {/* Breakdown */}
           <View style={styles.resultCard}>
             <View style={styles.resultRow}>
               <Text style={styles.resultRowLabel}>Original Price</Text>
-              <Text style={styles.resultRowValue}>${fmt(price)}</Text>
+              <Text style={styles.resultRowValue}>
+                {sym}
+                {fmt(price)}
+              </Text>
             </View>
 
             <View style={styles.resultRow}>
@@ -300,11 +416,12 @@ const DiscountCalc: React.FC = () => {
                 Discount (
                 {discountMode === "percentage"
                   ? `${discountValue}%`
-                  : `$${fmt(discountValue)}`}
+                  : `${sym}${fmt(discountValue)}`}
                 )
               </Text>
               <Text style={[styles.resultRowValue, { color: "#10B981" }]}>
-                −${fmt(result.discountAmount)}
+                −{sym}
+                {fmt(result.discountAmount)}
               </Text>
             </View>
 
@@ -313,7 +430,8 @@ const DiscountCalc: React.FC = () => {
             <View style={styles.resultRow}>
               <Text style={styles.resultRowLabel}>Price After Discount</Text>
               <Text style={[styles.resultRowValue, styles.finalPriceText]}>
-                ${fmt(result.finalPrice)}
+                {sym}
+                {fmt(result.finalPrice)}
               </Text>
             </View>
 
@@ -322,23 +440,22 @@ const DiscountCalc: React.FC = () => {
                 <View style={styles.resultRow}>
                   <Text style={styles.resultRowLabel}>Tax ({tax}%)</Text>
                   <Text style={[styles.resultRowValue, { color: "#F59E0B" }]}>
-                    +${fmt(result.taxAmount)}
+                    +{sym}
+                    {fmt(result.taxAmount)}
                   </Text>
                 </View>
-
                 <View style={styles.divider} />
-
                 <View style={styles.resultRow}>
                   <Text style={styles.resultRowLabel}>Total (with tax)</Text>
                   <Text style={[styles.resultRowValue, styles.totalText]}>
-                    ${fmt(result.totalWithTax)}
+                    {sym}
+                    {fmt(result.totalWithTax)}
                   </Text>
                 </View>
               </>
             )}
           </View>
 
-          {/* Clear */}
           <TouchableOpacity style={styles.clearButton} onPress={clearAll}>
             <Ionicons name="trash-outline" size={20} color="#fff" />
             <Text style={styles.clearButtonText}>Clear All</Text>
@@ -352,7 +469,7 @@ const DiscountCalc: React.FC = () => {
           <Ionicons name="pricetag-outline" size={20} color="#10B981" />
           <Text style={styles.infoText}>
             Use percentage mode for sales like "20% off", or fixed mode for
-            vouchers like "$15 off".
+            vouchers like "{sym}15 off".
           </Text>
         </View>
         <View style={styles.infoRow}>
@@ -380,10 +497,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
 
-  // Header
-  header: {
-    marginBottom: 24,
-  },
+  header: { marginBottom: 24 },
   headerText: {
     fontSize: 28,
     fontWeight: "700",
@@ -397,10 +511,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  // Section
-  section: {
-    marginBottom: 22,
-  },
+  section: { marginBottom: 22 },
   label: {
     color: "#E2E8F0",
     fontSize: 16,
@@ -413,7 +524,70 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
 
-  // Inputs
+  // ── Currency Selector ──
+  currencySelector: {
+    backgroundColor: "#1E293B",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#334155",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 12,
+  },
+  currencyFlag: { fontSize: 24 },
+  currencySelectorInfo: { flex: 1 },
+  currencyCode: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  currencyLabel: { color: "#64748B", fontSize: 12, marginTop: 2 },
+  currencySelectorRight: { flexDirection: "row", alignItems: "center", gap: 8 },
+  currencySymbolPreview: { color: "#10B981", fontSize: 18, fontWeight: "700" },
+
+  // ── Currency Modal ──
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "#00000088",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+  modalContainer: {
+    width: "100%",
+    backgroundColor: "#1E293B",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#334155",
+    overflow: "hidden",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#334155",
+  },
+  modalTitle: { color: "#fff", fontSize: 17, fontWeight: "700" },
+  modalItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#334155",
+    gap: 12,
+  },
+  modalItemActive: { backgroundColor: "#10B98112" },
+  modalItemFlag: { fontSize: 22 },
+  modalItemInfo: { flex: 1 },
+  modalItemCode: { color: "#E2E8F0", fontSize: 15, fontWeight: "700" },
+  modalItemCodeActive: { color: "#10B981" },
+  modalItemLabel: { color: "#64748B", fontSize: 12, marginTop: 2 },
+  modalItemSymbol: { color: "#475569", fontSize: 16, fontWeight: "600" },
+  modalItemSymbolActive: { color: "#10B981" },
+
+  // ── Inputs ──
   inputWrapper: {
     backgroundColor: "#1E293B",
     borderRadius: 12,
@@ -448,9 +622,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  inputIcon: {
-    marginRight: 8,
-  },
+  inputIcon: { marginRight: 8 },
   taxInput: {
     flex: 1,
     color: "#fff",
@@ -458,7 +630,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
 
-  // Mode Toggle
+  // ── Mode Toggle ──
   modeToggle: {
     flexDirection: "row",
     backgroundColor: "#1E293B",
@@ -477,19 +649,11 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     borderRadius: 10,
   },
-  modeButtonActive: {
-    backgroundColor: "#10B981",
-  },
-  modeText: {
-    color: "#64748B",
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  modeTextActive: {
-    color: "#fff",
-  },
+  modeButtonActive: { backgroundColor: "#10B981" },
+  modeText: { color: "#64748B", fontSize: 13, fontWeight: "600" },
+  modeTextActive: { color: "#fff" },
 
-  // Preset Grid
+  // ── Preset Grid ──
   presetGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -505,20 +669,11 @@ const styles = StyleSheet.create({
     borderColor: "#334155",
     alignItems: "center",
   },
-  presetButtonActive: {
-    backgroundColor: "#10B981",
-    borderColor: "#10B981",
-  },
-  presetText: {
-    color: "#CBD5E1",
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  presetTextActive: {
-    color: "#fff",
-  },
+  presetButtonActive: { backgroundColor: "#10B981", borderColor: "#10B981" },
+  presetText: { color: "#CBD5E1", fontSize: 15, fontWeight: "600" },
+  presetTextActive: { color: "#fff" },
 
-  // Calculate Button
+  // ── Calculate ──
   calculateButton: {
     backgroundColor: "#10B981",
     flexDirection: "row",
@@ -529,21 +684,11 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 24,
   },
-  calculateButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  buttonDisabled: {
-    backgroundColor: "#334155",
-    opacity: 0.5,
-  },
+  calculateButtonText: { color: "#fff", fontSize: 18, fontWeight: "700" },
+  buttonDisabled: { backgroundColor: "#334155", opacity: 0.5 },
 
-  // Results
-  resultSection: {
-    marginBottom: 24,
-    gap: 12,
-  },
+  // ── Results ──
+  resultSection: { marginBottom: 24, gap: 12 },
   savingsBanner: {
     backgroundColor: "#0D2E22",
     borderRadius: 14,
@@ -554,9 +699,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 14,
   },
-  savingsBannerText: {
-    flex: 1,
-  },
+  savingsBannerText: { flex: 1 },
   savingsBannerLabel: {
     color: "#6EE7B7",
     fontSize: 13,
@@ -565,16 +708,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     marginBottom: 2,
   },
-  savingsBannerValue: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "700",
-  },
-  savingsBannerPercent: {
-    color: "#10B981",
-    fontSize: 16,
-    fontWeight: "600",
-  },
+  savingsBannerValue: { color: "#fff", fontSize: 24, fontWeight: "700" },
+  savingsBannerPercent: { color: "#10B981", fontSize: 16, fontWeight: "600" },
   resultCard: {
     backgroundColor: "#1E293B",
     borderRadius: 16,
@@ -588,32 +723,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 9,
   },
-  resultRowLabel: {
-    color: "#94A3B8",
-    fontSize: 15,
-  },
-  resultRowValue: {
-    color: "#E2E8F0",
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  finalPriceText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  totalText: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#334155",
-    marginVertical: 6,
-  },
+  resultRowLabel: { color: "#94A3B8", fontSize: 15 },
+  resultRowValue: { color: "#E2E8F0", fontSize: 15, fontWeight: "600" },
+  finalPriceText: { color: "#fff", fontSize: 18, fontWeight: "700" },
+  totalText: { color: "#fff", fontSize: 20, fontWeight: "700" },
+  divider: { height: 1, backgroundColor: "#334155", marginVertical: 6 },
 
-  // Clear
   clearButton: {
     backgroundColor: "#334155",
     flexDirection: "row",
@@ -623,13 +738,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
-  clearButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
-  },
+  clearButtonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 
-  // Info Card
+  // ── Info ──
   infoCard: {
     backgroundColor: "#1E293B",
     borderRadius: 16,
@@ -643,10 +754,5 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 12,
   },
-  infoText: {
-    flex: 1,
-    color: "#CBD5E1",
-    fontSize: 14,
-    lineHeight: 20,
-  },
+  infoText: { flex: 1, color: "#CBD5E1", fontSize: 14, lineHeight: 20 },
 });

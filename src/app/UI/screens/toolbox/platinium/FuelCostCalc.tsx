@@ -11,8 +11,9 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import VersionBadge from "../../../component/VersionBadge";
 
-// ── Types ─────────────────────────────────────────────────────────
+// ── Types
 type FuelUnit = "liters" | "gallons";
 type DistUnit = "km" | "miles";
 type CalcMode = "trip" | "efficiency" | "budget";
@@ -37,7 +38,7 @@ interface BudgetResult {
   refills: number;
 }
 
-// ── Constants ─────────────────────────────────────────────────────
+// ── Constants
 const FUEL_PRESETS = [1.2, 1.5, 1.8, 2.0, 2.5, 3.0];
 const EFFICIENCY_PRESETS_L = [5, 7, 9, 12, 15]; // L/100km
 const EFFICIENCY_PRESETS_MPG = [20, 30, 40, 50, 60];
@@ -48,7 +49,7 @@ const CO2_PER_LITER = 2.31; // kg CO2 per litre petrol
 const LITRES_PER_GALLON = 3.785411784;
 const KM_PER_MILE = 1.609344;
 
-// ── Helpers ───────────────────────────────────────────────────────
+// ── Helpers
 const fmt2 = (v: number): string =>
   v.toLocaleString("en-US", {
     minimumFractionDigits: 2,
@@ -87,7 +88,7 @@ const toDisplayDist = (km: number, distUnit: DistUnit): number =>
 const toDisplayFuel = (liters: number, fuelUnit: FuelUnit): number =>
   fuelUnit === "gallons" ? liters / LITRES_PER_GALLON : liters;
 
-// ── Component ─────────────────────────────────────────────────────
+// ── Component
 const FuelCostCalc: React.FC = () => {
   const [mode, setMode] = useState<CalcMode>("trip");
   const [fuelUnit, setFuelUnit] = useState<FuelUnit>("liters");
@@ -130,7 +131,7 @@ const FuelCostCalc: React.FC = () => {
     }).start();
   };
 
-  // ── Derived labels ────────────────────────────────────────────
+  // ── Derived labels
   const effLabel =
     fuelUnit === "liters" && distUnit === "km"
       ? "L/100km"
@@ -143,7 +144,7 @@ const FuelCostCalc: React.FC = () => {
   const priceLabel = `${currency}/${fuelUnit === "liters" ? "L" : "gal"}`;
   const distLabel = distUnit;
 
-  // ── Getters ───────────────────────────────────────────────────
+  // ── Getters
   const getPrice = (): number =>
     selectedPrice !== null ? selectedPrice : parseFloat(fuelPrice) || 0;
   const getEff = (): number =>
@@ -153,7 +154,7 @@ const FuelCostCalc: React.FC = () => {
   const getTank = (): number =>
     selectedTank !== null ? selectedTank : parseFloat(tankSize) || 0;
 
-  // ── Validation ────────────────────────────────────────────────
+  // ── Validation
   const isValid = (): boolean => {
     if (mode === "trip") return getPrice() > 0 && getEff() > 0 && getDist() > 0;
     if (mode === "efficiency")
@@ -167,7 +168,7 @@ const FuelCostCalc: React.FC = () => {
     return false;
   };
 
-  // ── Calculate Trip ────────────────────────────────────────────
+  // ── Calculate Trip
   const calcTrip = () => {
     const price = getPrice();
     const eff = getEff();
@@ -198,7 +199,7 @@ const FuelCostCalc: React.FC = () => {
     animateIn();
   };
 
-  // ── Calculate Efficiency ──────────────────────────────────────
+  // ── Calculate Efficiency
   const calcEfficiency = () => {
     const fuel = parseFloat(fuelUsed) || 0;
     const dist = parseFloat(distTravelled) || 0;
@@ -232,7 +233,7 @@ const FuelCostCalc: React.FC = () => {
     animateIn();
   };
 
-  // ── Calculate Budget ──────────────────────────────────────────
+  // ── Calculate Budget
   const calcBudget = () => {
     const bud = parseFloat(budget) || 0;
     const price = getPrice();
@@ -296,6 +297,9 @@ const FuelCostCalc: React.FC = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <View>
+          <VersionBadge version="0.03" />
+        </View>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerText}>Fuel Cost Calculator</Text>
@@ -446,7 +450,7 @@ const FuelCostCalc: React.FC = () => {
           ))}
         </View>
 
-        {/* ── TRIP INPUTS ─────────────────────────────────────────── */}
+        {/* ── TRIP INPUTS */}
         {mode === "trip" && (
           <>
             <View style={styles.section}>
@@ -501,7 +505,7 @@ const FuelCostCalc: React.FC = () => {
           </>
         )}
 
-        {/* ── EFFICIENCY INPUTS ────────────────────────────────────── */}
+        {/* ── EFFICIENCY INPUTS */}
         {mode === "efficiency" && (
           <>
             <View style={styles.section}>
@@ -557,7 +561,7 @@ const FuelCostCalc: React.FC = () => {
           </>
         )}
 
-        {/* ── BUDGET INPUTS ─────────────────────────────────────────── */}
+        {/* ── BUDGET INPUTS */}
         {mode === "budget" && (
           <>
             <View style={styles.section}>
@@ -741,7 +745,7 @@ const FuelCostCalc: React.FC = () => {
           <Text style={styles.calcBtnText}>Calculate</Text>
         </TouchableOpacity>
 
-        {/* ── TRIP RESULT ─────────────────────────────────────────── */}
+        {/* ── TRIP RESULT  */}
         {tripResult && (
           <Animated.View
             style={[styles.resultSection, { opacity: resultAnim }]}
@@ -821,7 +825,7 @@ const FuelCostCalc: React.FC = () => {
           </Animated.View>
         )}
 
-        {/* ── EFFICIENCY RESULT ────────────────────────────────────── */}
+        {/* ── EFFICIENCY RESULT  */}
         {effResult && (
           <Animated.View
             style={[styles.resultSection, { opacity: resultAnim }]}
@@ -874,7 +878,7 @@ const FuelCostCalc: React.FC = () => {
           </Animated.View>
         )}
 
-        {/* ── BUDGET RESULT ─────────────────────────────────────────── */}
+        {/* ── BUDGET RESULT  */}
         {budgetResult && (
           <Animated.View
             style={[styles.resultSection, { opacity: resultAnim }]}
@@ -945,7 +949,7 @@ const FuelCostCalc: React.FC = () => {
 
 export default FuelCostCalc;
 
-// ─── STYLES ───────────────────────────────────────────────────────
+// ─── STYLES
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#101828" },
   contentContainer: {
