@@ -97,7 +97,7 @@ const CheckoutModal: React.FC<Props> = ({
     if (paymentMethod !== "card") return true;
     const newErrors: Record<string, string> = {};
     if (cardName.trim().length < 3)
-      newErrors.cardName = "Enter Payee Email";
+      newErrors.cardName = "Enter payee email / must be a Gmail address";
     // if (cardNumber.replace(/\s/g, "").length < 16)
     //   newErrors.cardNumber = "Enter a valid 16-digit card number";
     // if (expiry.length < 5) newErrors.expiry = "Enter expiry (MM/YY)";
@@ -204,6 +204,7 @@ const CheckoutModal: React.FC<Props> = ({
         <TouchableOpacity
           style={[
             s.payBtn,
+            // s.payBtnDisabled,
             paymentMethod === "paypal" && {
               borderColor: "#009CDE",
               borderWidth: 2,
@@ -211,6 +212,7 @@ const CheckoutModal: React.FC<Props> = ({
           ]}
           onPress={() => setPaymentMethod("paypal")}
           activeOpacity={0.8}
+          // disabled={true}
         >
           <FontAwesome5
             name="paypal"
@@ -305,12 +307,29 @@ const CheckoutModal: React.FC<Props> = ({
       )}
 
       {/* PayPal Box */}
-      {paymentMethod === "paypal" && (
+      {/* {paymentMethod === "paypal" && (
         <View style={s.altPayBox}>
           <FontAwesome5 name="paypal" size={36} color="#009CDE" />
           <Text style={s.altPayText}>
             You'll be securely redirected to PayPal to complete your payment.
           </Text>
+        </View>
+      )} */}
+      {paymentMethod === "paypal" && (
+        <View style={s.paypalDisabledBox}>
+          <Ionicons name="time-outline" size={32} color="#4B5563" />
+          <Text style={s.paypalDisabledTitle}>PayPal not active yet</Text>
+          <Text style={s.paypalDisabledText}>
+            This payment method is coming soon. Please use Credit / Debit card
+            to complete your purchase.
+          </Text>
+          <TouchableOpacity
+            onPress={() => setPaymentMethod("card")}
+            style={s.switchToCardBtn}
+            activeOpacity={0.8}
+          >
+            <Text style={s.switchToCardText}>Switch to Card</Text>
+          </TouchableOpacity>
         </View>
       )}
 
@@ -720,6 +739,58 @@ const s = StyleSheet.create({
   },
   successBtnText: { fontSize: 16, fontWeight: "700" },
   successNote: { color: "#4B5563", fontSize: 12 },
+  payBtnDisabled: {
+    opacity: 0.45,
+  },
+  comingSoonBadge: {
+    backgroundColor: "#1F2937",
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderWidth: 1,
+    borderColor: "#374151",
+  },
+  comingSoonText: {
+    color: "#6B7280",
+    fontSize: 9,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  paypalDisabledBox: {
+    backgroundColor: "#1F2937",
+    borderRadius: 14,
+    padding: 28,
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#374151",
+    borderStyle: "dashed",
+  },
+  paypalDisabledTitle: {
+    color: "#9CA3AF",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  paypalDisabledText: {
+    color: "#6B7280",
+    fontSize: 13,
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  switchToCardBtn: {
+    marginTop: 6,
+    backgroundColor: "#374151",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  switchToCardText: {
+    color: "#D1D5DB",
+    fontSize: 13,
+    fontWeight: "600",
+  },
 });
 
 export default CheckoutModal;
