@@ -42,6 +42,13 @@
             ]
           }
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "We use your location to determine the best payment method for your region.",
+          "locationWhenInUsePermission": "We use your location to determine the best payment method for your region."
+        }
       ]
     ]
   }
