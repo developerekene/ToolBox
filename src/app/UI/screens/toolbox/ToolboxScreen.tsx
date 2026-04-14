@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -41,169 +41,8 @@ import MortgageCalc from "./platinium/MortgageCalc";
 // Membership Modal
 import MembershipModal, { Tier } from "./MembershipModal";
 import CheckoutModal from "./CheckoutModal";
-
-const tools = [
-  {
-    id: "1",
-    title: "Crop Tool",
-    icon: "crop",
-    color: "#3B82F6",
-    requiredTier: "Silver",
-  },
-  {
-    id: "13",
-    title: "Scientific Calculator",
-    icon: "calculator",
-    color: "#3B82F6",
-    requiredTier: "Silver",
-  },
-  {
-    id: "14",
-    title: "BMI Calculator",
-    icon: "heartbeat",
-    color: "#10B981",
-    requiredTier: "Silver",
-  },
-  {
-    id: "2",
-    title: "Word Counter",
-    icon: "font",
-    color: "#10B981",
-    requiredTier: "Silver",
-  },
-  {
-    id: "3",
-    title: "PDF Scanner",
-    icon: "file-pdf",
-    color: "#F59E0B",
-    requiredTier: "Gold",
-  },
-  {
-    id: "4",
-    title: "QR Code Generator",
-    icon: "qrcode",
-    color: "#8B5CF6",
-    requiredTier: "Silver",
-  },
-
-  // ✅ NEW
-  {
-    id: "5",
-    title: "QR Scanner",
-    icon: "qrcode",
-    color: "#22C55E",
-    requiredTier: "Gold",
-  },
-
-  // {
-  //   id: "6",
-  //   title: "Video Trim",
-  //   icon: "video",
-  //   color: "#EF4444",
-  //   requiredTier: "Platinum",
-  // },
-  {
-    id: "7",
-    title: "Image Compress",
-    icon: "compress-arrows-alt",
-    color: "#6366F1",
-    requiredTier: "Gold",
-  },
-  {
-    id: "8",
-    title: "Translator",
-    icon: "language",
-    color: "#EC4899",
-    requiredTier: "Gold",
-  },
-  // {
-  //   id: "9",
-  //   title: "Audio Rec",
-  //   icon: "microphone",
-  //   color: "#14B8A6",
-  //   requiredTier: "Platinum",
-  // },
-  {
-    id: "10",
-    title: "Zip Creator",
-    icon: "file-archive",
-    color: "#F43F5E",
-    requiredTier: "Platinum",
-  },
-  {
-    id: "11",
-    title: "Notes Pro",
-    icon: "sticky-note",
-    color: "#8B5CF6",
-    requiredTier: "Platinum",
-  },
-
-  // ✅ NEW
-  {
-    id: "12",
-    title: "Encoder / Decoder",
-    icon: "code",
-    color: "#0EA5E9",
-    requiredTier: "Platinum",
-  },
-
-  {
-    id: "15",
-    title: "Loan Calculator",
-    icon: "money-bill-wave",
-    color: "#F59E0B",
-    requiredTier: "Gold",
-  },
-  {
-    id: "16",
-    title: "Tip Calculator",
-    icon: "hand-holding-usd",
-    color: "#8B5CF6",
-    requiredTier: "Silver",
-  },
-  {
-    id: "17",
-    title: "Currency Converter",
-    icon: "exchange-alt",
-    color: "#EF4444",
-    requiredTier: "Platinum",
-  },
-  {
-    id: "18",
-    title: "Unit Converter",
-    icon: "ruler-combined",
-    color: "#6366F1",
-    requiredTier: "Silver",
-  },
-  {
-    id: "19",
-    title: "Investment Calc",
-    icon: "chart-line",
-    color: "#EC4899",
-    requiredTier: "Platinum",
-  },
-  {
-    id: "20",
-    title: "Discount Calc",
-    icon: "percentage",
-    color: "#14B8A6",
-    requiredTier: "Gold",
-  },
-  {
-    id: "21",
-    title: "Fuel Cost Calc",
-    icon: "gas-pump",
-    color: "#F43F5E",
-    requiredTier: "Platinum",
-  },
-  {
-    id: "22",
-    title: "Mortgage Calc",
-    icon: "home",
-    color: "#8B5CF6",
-    requiredTier: "Platinum",
-  },
-];
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { tools } from "../../../utils/constant/data";
 
 const ToolboxsScreen: React.FC = () => {
   const handleClose = () => {
@@ -211,20 +50,30 @@ const ToolboxsScreen: React.FC = () => {
   };
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [userTier, setUserTier] = useState<Tier>("Platinum");
-  //  const [userTier, setUserTier] = useState<Tier>("Silver");
+  const [userTier, setUserTier] = useState<Tier>("Silver");
   const [membershipVisible, setMembershipVisible] = useState(false);
 
   const [checkoutVisible, setCheckoutVisible] = useState(false);
   const [checkoutTier, setCheckoutTier] = useState<Tier>("Gold");
-
-  // Fixed tier
-  // const userTier = "Silver"; // Change to Silver / Gold / Platinum
-  //const userTier = "Silver";  Change to Silver / Gold / Platinum
+  const [tierLoaded, setTierLoaded] = useState(false);
 
   const isTierAccessible = (required: string) => {
     const tiers = ["Silver", "Gold", "Platinum"];
     return tiers.indexOf(userTier) >= tiers.indexOf(required);
+  };
+
+  // Load saved tier on mount
+  useEffect(() => {
+    AsyncStorage.getItem("userTier").then((saved) => {
+      if (saved) setUserTier(saved as Tier);
+      setTierLoaded(true);
+    });
+  }, []);
+
+  // Save tier when it changes
+  const handleUpgrade = (tier: Tier) => {
+    setUserTier(tier);
+    AsyncStorage.setItem("userTier", tier);
   };
 
   const renderToolContent = (toolName: string) => {
@@ -309,7 +158,7 @@ const ToolboxsScreen: React.FC = () => {
         );
     }
   };
-
+  if (!tierLoaded) return null; // or a loading spinner
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainerMain}>
@@ -328,23 +177,14 @@ const ToolboxsScreen: React.FC = () => {
           </TouchableOpacity>
           {/* modal */}
 
-          {/* <MembershipModal
-            visible={membershipVisible}
-            currentTier={userTier}
-            onClose={() => setMembershipVisible(false)}
-            onUpgrade={(tier) => {
-              setCheckoutTier(tier);
-              setMembershipVisible(false);
-              setCheckoutVisible(true);
-            }}
-          /> */}
           <MembershipModal
             visible={membershipVisible}
             currentTier={userTier}
             onClose={() => setMembershipVisible(false)}
             onUpgrade={(tier) => {
               if (tier === "Silver") {
-                setUserTier(tier); // downgrade immediately, no checkout
+                // setUserTier(tier); // downgrade immediately, no checkout
+                handleUpgrade(tier); // ✅ saves downgrade to AsyncStorage too
               } else {
                 setCheckoutTier(tier);
                 setCheckoutVisible(true);
@@ -357,9 +197,13 @@ const ToolboxsScreen: React.FC = () => {
             tier={checkoutTier}
             onClose={() => setCheckoutVisible(false)}
             onSuccess={(tier) => {
-              setUserTier(tier); // unlocks tools right away
+              handleUpgrade(tier); // ✅ saves to AsyncStorage + unlocks tools
               setCheckoutVisible(false);
             }}
+            // onSuccess={(tier) => {
+            //   setUserTier(tier); // unlocks tools right away
+            //   setCheckoutVisible(false);
+            // }}
           />
         </View>
       </View>
