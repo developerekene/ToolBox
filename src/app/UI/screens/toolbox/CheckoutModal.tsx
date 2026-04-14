@@ -112,18 +112,19 @@ const CheckoutModal: React.FC<Props> = ({
     if (paymentMethod === "paypal") return;
     if (!validate()) return;
 
-    if (region === "africa") {
-      setStep("paystack");
-    } else {
-      setStep("processing");
-      try {
-        await registerUser(email.trim().toLowerCase());
-        setStep("success");
-      } catch {
-        setErrors({ cardName: "Something went wrong. Please try again." });
-        setStep("checkout");
-      }
-    }
+    setStep("paystack");
+    // if (region === "africa") {
+    //   setStep("paystack");
+    // } else {
+    //   setStep("processing");
+    //   try {
+    //     await registerUser(email.trim().toLowerCase());
+    //     setStep("success");
+    //   } catch {
+    //     setErrors({ cardName: "Something went wrong. Please try again." });
+    //     setStep("checkout");
+    //   }
+    // }
   };
 
   const handlePaystackSuccess = async (response: any) => {
