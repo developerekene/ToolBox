@@ -41,6 +41,7 @@ import MortgageCalc from "./platinium/MortgageCalc";
 // Membership Modal
 import MembershipModal, { Tier } from "./MembershipModal";
 import CheckoutModal from "./CheckoutModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const tools = [
   {
