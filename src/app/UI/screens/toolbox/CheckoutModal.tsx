@@ -68,13 +68,28 @@ const CheckoutModal: React.FC<Props> = ({
     setErrors({});
   };
 
+  // const validate = () => {
+  //   if (paymentMethod !== "card") return true;
+  //   const newErrors: Record<string, string> = {};
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!emailRegex.test(email.trim())) {
+  //     newErrors.cardName = "Please enter a valid gmail address";
+  //   }
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
+
   const validate = () => {
     if (paymentMethod !== "card") return true;
+
     const newErrors: Record<string, string> = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      newErrors.cardName = "Please enter a valid email address";
+
+    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+    if (!gmailRegex.test(email.trim())) {
+      newErrors.cardName = " Email must be a valid Gmail address";
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -166,6 +181,7 @@ const CheckoutModal: React.FC<Props> = ({
                 <EmailInput
                   value={email}
                   error={errors.cardName}
+                  // error={errors.email}
                   paymentMethod={paymentMethod}
                   onChange={setEmail}
                   onSwitchToCard={() => setPaymentMethod("card")}
