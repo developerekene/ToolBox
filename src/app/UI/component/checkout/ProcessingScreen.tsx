@@ -15,9 +15,9 @@ const ProcessingScreen: React.FC<Props> = ({ tierColor }) => (
 
 const s = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 80,
   },
   title: { color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 20 },
   subtitle: { color: "#6B7280", fontSize: 13, marginTop: 8 },

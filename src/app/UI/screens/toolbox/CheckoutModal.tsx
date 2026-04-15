@@ -14,6 +14,7 @@ import { Tier } from "../../screens/toolbox/MembershipModal";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
 import { useUserRegion } from "../../../../hooks/useLocation";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Components
 import OrderSummary from "../../component/checkout/OrderSummary";
@@ -60,24 +61,15 @@ const CheckoutModal: React.FC<Props> = ({
   const { region, loading: regionLoading } = useUserRegion();
   const tierColor = TIER_COLORS[tier];
   const price = TIER_PRICES[tier];
+  const hasHandledSuccess = useRef(false);
 
   const reset = () => {
     setStep("checkout");
     setPaymentMethod("card");
     setEmail("");
     setErrors({});
+    hasHandledSuccess.current = false; // ✅ reset for next payment
   };
-
-  // const validate = () => {
-  //   if (paymentMethod !== "card") return true;
-  //   const newErrors: Record<string, string> = {};
-  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   if (!emailRegex.test(email.trim())) {
-  //     newErrors.cardName = "Please enter a valid gmail address";
-  //   }
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
 
   const validate = () => {
     if (paymentMethod !== "card") return true;
@@ -94,18 +86,25 @@ const CheckoutModal: React.FC<Props> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  // firebase user registration (Goes here because we need region data from the hook)
+
+  // const registerUser = async (userEmail: string) => {
+  //   await setDoc(
+  //     doc(db, "users", userEmail),
+  //     {
+  //       email: userEmail,
+  //       tier,
+  //       region: region ?? "unknown",
+  //       subscribedAt: serverTimestamp(),
+  //       platform: "toolbox-app",
+  //     },
+  //     { merge: true },
+  //   );
+  // };
+
   const registerUser = async (userEmail: string) => {
-    await setDoc(
-      doc(db, "users", userEmail),
-      {
-        email: userEmail,
-        tier,
-        region: region ?? "unknown",
-        subscribedAt: serverTimestamp(),
-        platform: "toolbox-app",
-      },
-      { merge: true },
-    );
+    await AsyncStorage.setItem("userEmail", userEmail);
+    await AsyncStorage.setItem("userTier", tier);
   };
 
   const handlePay = async () => {
@@ -127,7 +126,22 @@ const CheckoutModal: React.FC<Props> = ({
     // }
   };
 
+  // const handlePaystackSuccess = async (response: any) => {
+  //   console.log("Paystack success:", response);
+  //   setStep("processing");
+  //   try {
+  //     await registerUser(email.trim().toLowerCase());
+  //     setStep("success");
+  //   } catch {
+  //     setErrors({ cardName: "Something went wrong saving your account." });
+  //     setStep("checkout");
+  //   }
+  // };
+
   const handlePaystackSuccess = async (response: any) => {
+    if (hasHandledSuccess.current) return; // ✅ block duplicate calls
+    hasHandledSuccess.current = true;
+
     console.log("Paystack success:", response);
     setStep("processing");
     try {
@@ -136,6 +150,7 @@ const CheckoutModal: React.FC<Props> = ({
     } catch {
       setErrors({ cardName: "Something went wrong saving your account." });
       setStep("checkout");
+      hasHandledSuccess.current = false; // reset so user can retry
     }
   };
 
@@ -237,6 +252,7 @@ const s = StyleSheet.create({
     padding: 24,
     paddingBottom: 48,
     maxHeight: "92%",
+    flex: 1,
   },
   handle: {
     width: 40,
@@ -257,784 +273,6 @@ const s = StyleSheet.create({
 });
 
 export default CheckoutModal;
-
-// import React, { useEffect, useRef, useState } from "react";
-// import {
-//   Modal,
-//   View,
-//   Text,
-//   TextInput,
-//   TouchableOpacity,
-//   ScrollView,
-//   StyleSheet,
-//   ActivityIndicator,
-// } from "react-native";
-// import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-// import { Tier } from "./MembershipModal";
-// import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-// import { db } from "../../../../firebaseConfig";
-// import { useUserRegion } from "../../../../hooks/useLocation";
-// import {
-//   PAYSTACK_PUBLIC_KEY,
-//   convertGBPtoKobo,
-// } from "../../../utils/constant/paystackPayment";
-// // import Paystack from "react-native-paystack-webview";
-// // import PaystackWebView from "react-native-paystack-webview";
-// import { PaystackProvider, usePaystack } from "react-native-paystack-webview";
-
-// interface Props {
-//   visible: boolean;
-//   tier: Tier;
-//   onClose: () => void;
-//   onSuccess: (tier: Tier) => void;
-// }
-
-// type PaymentMethod = "card" | "paypal";
-// type Step = "checkout" | "processing" | "paystack" | "success";
-
-// const TIER_PRICES: Record<Tier, string> = {
-//   Silver: "0.00",
-//   Gold: "4.12",
-//   Platinum: "16.03",
-// };
-
-// const TIER_COLORS: Record<Tier, string> = {
-//   Silver: "#94A3B8",
-//   Gold: "#F59E0B",
-//   Platinum: "#A78BFA",
-// };
-
-// const TIER_FEATURES: Record<Tier, string[]> = {
-//   Silver: [
-//     "Crop Tool, Word Counter",
-//     "Scientific & BMI Calculator",
-//     "Unit & Tip Calculator",
-//     "QR Code Generator",
-//   ],
-//   Gold: [
-//     "Everything in Silver",
-//     "PDF Scanner & QR Scanner",
-//     "Image Compress & Translator",
-//     "Loan & Discount Calculator",
-//   ],
-//   Platinum: [
-//     "Everything in Gold",
-//     "Video Trim, Audio Rec, Zip Creator",
-//     "Notes Pro, Encoder / Decoder",
-//     "Currency, Investment & Mortgage Calc",
-//   ],
-// };
-
-// const AutoStartPaystack: React.FC<{
-//   amount: number;
-//   email: string;
-//   reference: string;
-//   onSuccess: (res: any) => void;
-//   onCancel: () => void;
-// }> = ({ amount, email, reference, onSuccess, onCancel }) => {
-//   const { popup } = usePaystack();
-//   const hasStarted = useRef(false);
-
-//   useEffect(() => {
-//     if (popup && !hasStarted.current) {
-//       hasStarted.current = true;
-//       popup.checkout({
-//         amount,
-//         email,
-//         reference,
-//         onSuccess,
-//         onCancel,
-//       });
-//     }
-//   }, [popup]);
-
-//   return (
-//     <ActivityIndicator size="large" color="#F59E0B" style={{ marginTop: 40 }} />
-//   );
-// };
-
-// const CheckoutModal: React.FC<Props> = ({
-//   visible,
-//   tier,
-//   onClose,
-//   onSuccess,
-// }) => {
-//   const [step, setStep] = useState<Step>("checkout");
-//   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
-//   const [cardName, setCardName] = useState("");
-//   const [errors, setErrors] = useState<Record<string, string>>({});
-//   const paystackRef = useRef<any>(null);
-
-//   // const PaystackComponent = Paystack as any;
-//   const { region, loading: regionLoading } = useUserRegion();
-//   const tierColor = TIER_COLORS[tier];
-//   const price = TIER_PRICES[tier];
-
-//   const reset = () => {
-//     setStep("checkout");
-//     setPaymentMethod("card");
-//     setCardName("");
-//     setErrors({});
-//   };
-
-//   const validate = () => {
-//     if (paymentMethod !== "card") return true;
-//     const newErrors: Record<string, string> = {};
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!emailRegex.test(cardName.trim())) {
-//       newErrors.cardName = "Please enter a valid email address";
-//     }
-//     setErrors(newErrors);
-//     return Object.keys(newErrors).length === 0;
-//   };
-
-//   const registerUser = async (email: string) => {
-//     await setDoc(
-//       doc(db, "users", email),
-//       {
-//         email,
-//         tier,
-//         region: region ?? "unknown",
-//         subscribedAt: serverTimestamp(),
-//         platform: "toolbox-app",
-//       },
-//       { merge: true },
-//     );
-//   };
-
-//   const handlePay = async () => {
-//     if (paymentMethod === "paypal") return;
-//     if (!validate()) return;
-
-//     if (region === "africa") {
-//       // Launch Paystack WebView
-//       setStep("paystack");
-//     } else {
-//       // Stripe coming soon — direct register for now
-//       setStep("processing");
-//       try {
-//         await registerUser(cardName.trim().toLowerCase());
-//         setStep("success");
-//       } catch (e) {
-//         setErrors({ cardName: "Something went wrong. Please try again." });
-//         setStep("checkout");
-//       }
-//     }
-//   };
-
-//   const handlePaystackSuccess = async (response: any) => {
-//     console.log("Paystack success:", response);
-//     setStep("processing");
-//     try {
-//       await registerUser(cardName.trim().toLowerCase());
-//       setStep("success");
-//     } catch (e) {
-//       setErrors({ cardName: "Something went wrong saving your account." });
-//       setStep("checkout");
-//     }
-//   };
-
-//   const handlePaystackCancel = () => {
-//     setStep("checkout");
-//   };
-
-//   const handleDone = () => {
-//     onSuccess(tier);
-//     onClose();
-//     reset();
-//   };
-
-//   const renderCheckout = () => (
-//     <ScrollView showsVerticalScrollIndicator={false}>
-//       {/* Order Summary */}
-//       <View style={s.summaryCard}>
-//         <Text style={s.sectionLabel}>Order Summary</Text>
-//         <View style={s.summaryRow}>
-//           <View>
-//             <Text style={s.summaryTierName}>
-//               <Text style={{ color: tierColor }}>{tier}</Text> Plan
-//             </Text>
-//             <Text style={s.summaryBilling}>
-//               Billed monthly · Cancel anytime
-//             </Text>
-//           </View>
-//           <Text style={s.summaryPrice}>
-//             £{price}
-//             <Text style={s.summaryPeriod}>/mo</Text>
-//           </Text>
-//         </View>
-//         <View style={s.divider} />
-//         {TIER_FEATURES[tier].map((f) => (
-//           <Text key={f} style={s.featureItem}>
-//             <Text style={{ color: tierColor }}>✓ </Text>
-//             {f}
-//           </Text>
-//         ))}
-//         <View style={s.divider} />
-//         <View style={s.summaryRow}>
-//           <Text style={s.totalLabel}>Total today</Text>
-//           <Text style={[s.totalPrice, { color: tierColor }]}>
-//             {region === "africa"
-//               ? `₦${(parseFloat(price) * 2050).toLocaleString()}`
-//               : `£${price}`}
-//           </Text>
-//         </View>
-//         {/* Region indicator */}
-//         {!regionLoading && (
-//           <View style={s.regionBadge}>
-//             <Text style={s.regionText}>
-//               {region === "africa"
-//                 ? "🇳🇬 Paying in Naira via Paystack"
-//                 : "🌍 Paying in GBP"}
-//             </Text>
-//           </View>
-//         )}
-//       </View>
-
-//       {/* Payment Method */}
-//       <Text style={s.sectionLabel}>Payment method</Text>
-//       <View style={s.payMethodRow}>
-//         <TouchableOpacity
-//           style={[
-//             s.payBtn,
-//             paymentMethod === "card" && {
-//               borderColor: tierColor,
-//               borderWidth: 2,
-//             },
-//           ]}
-//           onPress={() => setPaymentMethod("card")}
-//           activeOpacity={0.8}
-//         >
-//           <FontAwesome5
-//             name="credit-card"
-//             size={20}
-//             color={paymentMethod === "card" ? tierColor : "#6B7280"}
-//           />
-//           <Text
-//             style={[
-//               s.payBtnText,
-//               paymentMethod === "card" && { color: tierColor },
-//             ]}
-//           >
-//             Credit / Debit
-//           </Text>
-//         </TouchableOpacity>
-
-//         <TouchableOpacity
-//           style={[
-//             s.payBtn,
-//             paymentMethod === "paypal" && {
-//               borderColor: "#009CDE",
-//               borderWidth: 2,
-//             },
-//           ]}
-//           onPress={() => setPaymentMethod("paypal")}
-//           activeOpacity={0.8}
-//         >
-//           <FontAwesome5
-//             name="paypal"
-//             size={20}
-//             color={paymentMethod === "paypal" ? "#009CDE" : "#6B7280"}
-//           />
-//           <Text
-//             style={[
-//               s.payBtnText,
-//               paymentMethod === "paypal" && { color: "#009CDE" },
-//             ]}
-//           >
-//             PayPal
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-
-//       {/* Email Input */}
-//       {paymentMethod === "card" && (
-//         <View style={s.cardForm}>
-//           <View style={s.inputGroup}>
-//             <Text style={s.inputLabel}>Email</Text>
-//             <TextInput
-//               style={[s.input, errors.cardName && s.inputError]}
-//               placeholder="Enter your email address"
-//               placeholderTextColor="#4B5563"
-//               value={cardName}
-//               keyboardType="email-address"
-//               autoCapitalize="none"
-//               onChangeText={setCardName}
-//             />
-//             {errors.cardName && (
-//               <Text style={s.errorText}>{errors.cardName}</Text>
-//             )}
-//           </View>
-//         </View>
-//       )}
-
-//       {/* PayPal disabled */}
-//       {paymentMethod === "paypal" && (
-//         <View style={s.paypalDisabledBox}>
-//           <Ionicons name="time-outline" size={32} color="#4B5563" />
-//           <Text style={s.paypalDisabledTitle}>PayPal not active yet</Text>
-//           <Text style={s.paypalDisabledText}>
-//             Coming soon. Please use Credit / Debit card to complete your
-//             purchase.
-//           </Text>
-//           <TouchableOpacity
-//             onPress={() => setPaymentMethod("card")}
-//             style={s.switchToCardBtn}
-//           >
-//             <Text style={s.switchToCardText}>Switch to Card</Text>
-//           </TouchableOpacity>
-//         </View>
-//       )}
-
-//       {/* Security */}
-//       <View style={s.secureRow}>
-//         <Ionicons name="lock-closed" size={12} color="#4B5563" />
-//         <Text style={s.secureText}>
-//           256-bit SSL encrypted · Secure checkout
-//         </Text>
-//       </View>
-
-//       {/* Pay Button */}
-//       <TouchableOpacity
-//         style={[
-//           s.payNowBtn,
-//           { backgroundColor: tierColor },
-//           regionLoading && { opacity: 0.6 },
-//         ]}
-//         onPress={handlePay}
-//         disabled={regionLoading}
-//         activeOpacity={0.85}
-//       >
-//         <Text
-//           style={[
-//             s.payNowText,
-//             { color: tier === "Gold" ? "#1a0e00" : "#fff" },
-//           ]}
-//         >
-//           {regionLoading
-//             ? "Detecting location..."
-//             : region === "africa"
-//               ? `Pay ₦${(parseFloat(price) * 2050).toLocaleString()} / month`
-//               : `Proceed with £${price} / month`}
-//         </Text>
-//       </TouchableOpacity>
-
-//       <View style={{ height: 24 }} />
-//     </ScrollView>
-//   );
-
-//   const renderPaystack = () => {
-//     const email = cardName.trim().toLowerCase();
-//     const reference = `TB-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-//     const amountInKobo = convertGBPtoKobo(price);
-
-//     return (
-//       <View style={{ flex: 1 }}>
-//         {/* Header with cancel */}
-//         <View
-//           style={{
-//             flexDirection: "row",
-//             justifyContent: "space-between",
-//             alignItems: "center",
-//             marginBottom: 20,
-//           }}
-//         >
-//           <Text style={{ color: "#fff", fontSize: 16, fontWeight: "700" }}>
-//             Complete Payment
-//           </Text>
-//           <TouchableOpacity onPress={handlePaystackCancel}>
-//             <Text style={{ color: "#EF4444", fontWeight: "600" }}>Cancel</Text>
-//           </TouchableOpacity>
-//         </View>
-
-//         <PaystackProvider
-//           publicKey={PAYSTACK_PUBLIC_KEY}
-//           onGlobalSuccess={handlePaystackSuccess}
-//           onGlobalCancel={handlePaystackCancel}
-//           defaultChannels={["card", "bank", "ussd", "mobile_money"]}
-//           currency="NGN"
-//         >
-//           <AutoStartPaystack
-//             amount={amountInKobo / 100}
-//             email={email}
-//             reference={reference}
-//             onSuccess={handlePaystackSuccess}
-//             onCancel={handlePaystackCancel}
-//           />
-//         </PaystackProvider>
-//       </View>
-//     );
-//   };
-
-//   const renderProcessing = () => (
-//     <View style={s.processingContainer}>
-//       <ActivityIndicator size="large" color={tierColor} />
-//       <Text style={s.processingTitle}>Processing payment...</Text>
-//       <Text style={s.processingSubtitle}>Please don't close this screen</Text>
-//     </View>
-//   );
-
-//   const renderSuccess = () => (
-//     <ScrollView
-//       showsVerticalScrollIndicator={false}
-//       contentContainerStyle={s.successContainer}
-//     >
-//       <View style={[s.successRingOuter, { borderColor: tierColor + "33" }]}>
-//         <View style={[s.successRingInner, { borderColor: tierColor + "66" }]}>
-//           <View
-//             style={[
-//               s.successIconCircle,
-//               { backgroundColor: tierColor + "22", borderColor: tierColor },
-//             ]}
-//           >
-//             <Ionicons name="checkmark" size={48} color={tierColor} />
-//           </View>
-//         </View>
-//       </View>
-
-//       <View
-//         style={[
-//           s.successTierBadge,
-//           { backgroundColor: tierColor + "22", borderColor: tierColor + "55" },
-//         ]}
-//       >
-//         <FontAwesome5
-//           name={
-//             tier === "Gold"
-//               ? "crown"
-//               : tier === "Platinum"
-//                 ? "gem"
-//                 : "shield-alt"
-//           }
-//           size={12}
-//           color={tierColor}
-//         />
-//         <Text style={[s.successTierBadgeText, { color: tierColor }]}>
-//           {tier} Member
-//         </Text>
-//       </View>
-
-//       <Text style={s.successTitle}>You're all set!</Text>
-//       <Text style={s.successSubtitle}>
-//         Welcome to{" "}
-//         <Text style={{ color: tierColor, fontWeight: "700" }}>{tier}</Text>.
-//         {"\n"}
-//         Your tools are now ready to use.
-//       </Text>
-
-//       <View style={[s.unlockedCard, { borderColor: tierColor + "33" }]}>
-//         <Text style={[s.unlockedLabel, { color: tierColor }]}>
-//           ✦ Unlocked with {tier}
-//         </Text>
-//         {TIER_FEATURES[tier].map((f) => (
-//           <View key={f} style={s.unlockedRow}>
-//             <View style={[s.unlockedDot, { backgroundColor: tierColor }]} />
-//             <Text style={s.unlockedText}>{f}</Text>
-//           </View>
-//         ))}
-//       </View>
-
-//       <TouchableOpacity
-//         style={[s.successBtn, { backgroundColor: tierColor }]}
-//         onPress={handleDone}
-//         activeOpacity={0.85}
-//       >
-//         <Text
-//           style={[
-//             s.successBtnText,
-//             { color: tier === "Gold" ? "#1a0e00" : "#fff" },
-//           ]}
-//         >
-//           Start using {tier} tools
-//         </Text>
-//         <Ionicons
-//           name="arrow-forward"
-//           size={18}
-//           color={tier === "Gold" ? "#1a0e00" : "#fff"}
-//           style={{ marginLeft: 8 }}
-//         />
-//       </TouchableOpacity>
-
-//       <Text style={s.successNote}>A receipt has been sent to your email</Text>
-//     </ScrollView>
-//   );
-
-//   return (
-//     <Modal visible={visible} animationType="slide" transparent>
-//       <View style={s.overlay}>
-//         <View style={s.sheet}>
-//           <View style={s.handle} />
-
-//           {step === "checkout" && (
-//             <View style={s.headerRow}>
-//               <Text style={s.headerTitle}>Upgrade to {tier}</Text>
-//               <TouchableOpacity
-//                 onPress={() => {
-//                   reset();
-//                   onClose();
-//                 }}
-//                 style={s.closeBtn}
-//               >
-//                 <Ionicons name="close" size={20} color="#9CA3AF" />
-//               </TouchableOpacity>
-//             </View>
-//           )}
-
-//           {step === "checkout" && renderCheckout()}
-//           {step === "paystack" && renderPaystack()}
-//           {step === "processing" && renderProcessing()}
-//           {step === "success" && renderSuccess()}
-//         </View>
-//       </View>
-//     </Modal>
-//   );
-// };
-
-// const s = StyleSheet.create({
-//   overlay: {
-//     flex: 1,
-//     backgroundColor: "rgba(0,0,0,0.75)",
-//     justifyContent: "flex-end",
-//   },
-//   sheet: {
-//     backgroundColor: "#101828",
-//     borderTopLeftRadius: 24,
-//     borderTopRightRadius: 24,
-//     padding: 24,
-//     paddingBottom: 48,
-//     maxHeight: "92%",
-//   },
-//   handle: {
-//     width: 40,
-//     height: 4,
-//     backgroundColor: "#374151",
-//     borderRadius: 2,
-//     alignSelf: "center",
-//     marginBottom: 20,
-//   },
-//   headerRow: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     justifyContent: "space-between",
-//     marginBottom: 20,
-//   },
-//   headerTitle: { color: "#fff", fontSize: 18, fontWeight: "700" },
-//   closeBtn: { backgroundColor: "#1F2937", borderRadius: 8, padding: 6 },
-//   summaryCard: {
-//     backgroundColor: "#1F2937",
-//     borderRadius: 16,
-//     padding: 16,
-//     marginBottom: 20,
-//   },
-//   summaryRow: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     justifyContent: "space-between",
-//   },
-//   summaryTierName: {
-//     color: "#fff",
-//     fontSize: 15,
-//     fontWeight: "700",
-//     marginBottom: 2,
-//   },
-//   summaryBilling: { color: "#4B5563", fontSize: 11 },
-//   summaryPrice: { color: "#fff", fontSize: 22, fontWeight: "700" },
-//   summaryPeriod: { color: "#6B7280", fontSize: 13, fontWeight: "400" },
-//   divider: { height: 1, backgroundColor: "#374151", marginVertical: 12 },
-//   featureItem: { color: "#9CA3AF", fontSize: 13, marginBottom: 5 },
-//   totalLabel: { color: "#9CA3AF", fontSize: 14 },
-//   totalPrice: { fontSize: 22, fontWeight: "700" },
-//   regionBadge: {
-//     marginTop: 10,
-//     backgroundColor: "#0f2027",
-//     borderRadius: 8,
-//     padding: 8,
-//     alignItems: "center",
-//   },
-//   regionText: { color: "#9CA3AF", fontSize: 12 },
-//   sectionLabel: {
-//     color: "#6B7280",
-//     fontSize: 11,
-//     fontWeight: "700",
-//     textTransform: "uppercase",
-//     letterSpacing: 0.8,
-//     marginBottom: 10,
-//   },
-//   payMethodRow: { flexDirection: "row", gap: 10, marginBottom: 20 },
-//   payBtn: {
-//     flex: 1,
-//     backgroundColor: "#1F2937",
-//     borderRadius: 12,
-//     paddingVertical: 14,
-//     alignItems: "center",
-//     gap: 6,
-//     borderWidth: 2,
-//     borderColor: "transparent",
-//   },
-//   payBtnText: { color: "#6B7280", fontSize: 12, fontWeight: "600" },
-//   cardForm: { marginBottom: 4 },
-//   inputGroup: { marginBottom: 14 },
-//   inputLabel: {
-//     color: "#9CA3AF",
-//     fontSize: 12,
-//     fontWeight: "600",
-//     marginBottom: 6,
-//   },
-//   input: {
-//     backgroundColor: "#1F2937",
-//     borderRadius: 10,
-//     padding: 14,
-//     color: "#fff",
-//     fontSize: 15,
-//     borderWidth: 1.5,
-//     borderColor: "#374151",
-//   },
-//   inputError: { borderColor: "#EF4444" },
-//   errorText: { color: "#EF4444", fontSize: 11, marginTop: 4 },
-//   secureRow: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     justifyContent: "center",
-//     gap: 6,
-//     marginBottom: 16,
-//   },
-//   secureText: { color: "#4B5563", fontSize: 11 },
-//   payNowBtn: { borderRadius: 14, padding: 16, alignItems: "center" },
-//   payNowText: { fontSize: 16, fontWeight: "700" },
-//   processingContainer: {
-//     alignItems: "center",
-//     justifyContent: "center",
-//     paddingVertical: 80,
-//   },
-//   processingTitle: {
-//     color: "#fff",
-//     fontSize: 18,
-//     fontWeight: "700",
-//     marginTop: 20,
-//   },
-//   processingSubtitle: { color: "#6B7280", fontSize: 13, marginTop: 8 },
-//   successContainer: {
-//     alignItems: "center",
-//     paddingVertical: 32,
-//     paddingHorizontal: 8,
-//   },
-//   successRingOuter: {
-//     width: 160,
-//     height: 160,
-//     borderRadius: 80,
-//     borderWidth: 1,
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginBottom: 24,
-//   },
-//   successRingInner: {
-//     width: 130,
-//     height: 130,
-//     borderRadius: 65,
-//     borderWidth: 1.5,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   successIconCircle: {
-//     width: 100,
-//     height: 100,
-//     borderRadius: 50,
-//     borderWidth: 2,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   successTierBadge: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     gap: 6,
-//     paddingHorizontal: 12,
-//     paddingVertical: 5,
-//     borderRadius: 20,
-//     borderWidth: 1,
-//     marginBottom: 16,
-//   },
-//   successTierBadgeText: {
-//     fontSize: 12,
-//     fontWeight: "700",
-//     textTransform: "uppercase",
-//     letterSpacing: 0.8,
-//   },
-//   successTitle: {
-//     color: "#fff",
-//     fontSize: 26,
-//     fontWeight: "700",
-//     marginBottom: 10,
-//   },
-//   successSubtitle: {
-//     color: "#9CA3AF",
-//     fontSize: 14,
-//     textAlign: "center",
-//     lineHeight: 22,
-//     marginBottom: 24,
-//   },
-//   unlockedCard: {
-//     width: "100%",
-//     backgroundColor: "#1F2937",
-//     borderRadius: 14,
-//     padding: 16,
-//     borderWidth: 1,
-//     marginBottom: 24,
-//   },
-//   unlockedLabel: {
-//     fontSize: 11,
-//     fontWeight: "700",
-//     textTransform: "uppercase",
-//     letterSpacing: 0.8,
-//     marginBottom: 12,
-//   },
-//   unlockedRow: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     gap: 10,
-//     marginBottom: 8,
-//   },
-//   unlockedDot: { width: 6, height: 6, borderRadius: 3 },
-//   unlockedText: { color: "#9CA3AF", fontSize: 13 },
-//   successBtn: {
-//     width: "100%",
-//     borderRadius: 14,
-//     padding: 16,
-//     flexDirection: "row",
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginBottom: 14,
-//   },
-//   successBtnText: { fontSize: 16, fontWeight: "700" },
-//   successNote: { color: "#4B5563", fontSize: 12 },
-//   paypalDisabledBox: {
-//     backgroundColor: "#1F2937",
-//     borderRadius: 14,
-//     padding: 28,
-//     alignItems: "center",
-//     gap: 10,
-//     marginBottom: 16,
-//     borderWidth: 1,
-//     borderColor: "#374151",
-//     borderStyle: "dashed",
-//   },
-//   paypalDisabledTitle: { color: "#9CA3AF", fontSize: 15, fontWeight: "700" },
-//   paypalDisabledText: {
-//     color: "#6B7280",
-//     fontSize: 13,
-//     textAlign: "center",
-//     lineHeight: 20,
-//   },
-//   switchToCardBtn: {
-//     marginTop: 6,
-//     backgroundColor: "#374151",
-//     borderRadius: 8,
-//     paddingHorizontal: 16,
-//     paddingVertical: 8,
-//   },
-//   switchToCardText: { color: "#D1D5DB", fontSize: 13, fontWeight: "600" },
-// });
-
-// export default CheckoutModal;
 
 // import React, { useState } from "react";
 // import {
