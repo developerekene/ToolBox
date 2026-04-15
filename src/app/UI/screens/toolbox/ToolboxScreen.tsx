@@ -62,12 +62,20 @@ const ToolboxsScreen: React.FC = () => {
     return tiers.indexOf(userTier) >= tiers.indexOf(required);
   };
 
-  // Load saved tier on mount
+  // Load saved tier on mount(firebase auth integration would go here in a real app)
+  // useEffect(() => {
+  //   AsyncStorage.getItem("userTier").then((saved) => {
+  //     if (saved) setUserTier(saved as Tier);
+  //     setTierLoaded(true);
+  //   });
+  // }, []);
   useEffect(() => {
-    AsyncStorage.getItem("userTier").then((saved) => {
-      if (saved) setUserTier(saved as Tier);
+    const loadUser = async () => {
+      const savedTier = await AsyncStorage.getItem("userTier");
+      if (savedTier) setUserTier(savedTier as Tier);
       setTierLoaded(true);
-    });
+    };
+    loadUser();
   }, []);
 
   // Save tier when it changes
