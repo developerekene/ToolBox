@@ -103,8 +103,11 @@ const CheckoutModal: React.FC<Props> = ({
   // };
 
   const registerUser = async (userEmail: string) => {
+    const expiryDate = new Date();
+    expiryDate.setMonth(expiryDate.getMonth() + 1);
     await AsyncStorage.setItem("userEmail", userEmail);
     await AsyncStorage.setItem("userTier", tier);
+    await AsyncStorage.setItem("userExpiryDate", expiryDate.toISOString());
   };
 
   const handlePay = async () => {

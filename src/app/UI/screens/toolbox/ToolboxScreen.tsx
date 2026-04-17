@@ -69,14 +69,39 @@ const ToolboxsScreen: React.FC = () => {
   //     setTierLoaded(true);
   //   });
   // }, []);
+
+  // monthly expiry (for auto-downgrade)
   useEffect(() => {
     const loadUser = async () => {
       const savedTier = await AsyncStorage.getItem("userTier");
-      if (savedTier) setUserTier(savedTier as Tier);
+      const savedExpiry = await AsyncStorage.getItem("tierExpiry");
+
+      if (savedTier && savedExpiry) {
+        const expiry = new Date(savedExpiry);
+        const now = new Date();
+
+        if (now > expiry) {
+          // Subscription expired — downgrade to Silver
+          await AsyncStorage.setItem("userTier", "Silver");
+          await AsyncStorage.removeItem("tierExpiry");
+          setUserTier("Silver");
+        } else {
+          setUserTier(savedTier as Tier);
+        }
+      }
+
       setTierLoaded(true);
     };
     loadUser();
   }, []);
+  // useEffect(() => {
+  //   const loadUser = async () => {
+  //     const savedTier = await AsyncStorage.getItem("userTier");
+  //     if (savedTier) setUserTier(savedTier as Tier);
+  //     setTierLoaded(true);
+  //   };
+  //   loadUser();
+  // }, []);
 
   // Save tier when it changes
   const handleUpgrade = (tier: Tier) => {
