@@ -3,7 +3,7 @@ export const tools = [
     id: "1",
     title: "Crop Tool",
     icon: "crop",
-    color: "#3B82F6",
+    color: "#FF69B4",
     requiredTier: "Silver",
   },
   {
@@ -17,7 +17,7 @@ export const tools = [
     id: "14",
     title: "BMI Calculator",
     icon: "heartbeat",
-    color: "#10B981",
+    color: "#F59E0B",
     requiredTier: "Silver",
   },
   {
@@ -31,7 +31,7 @@ export const tools = [
     id: "3",
     title: "PDF Scanner",
     icon: "file-pdf",
-    color: "#F59E0B",
+    color: "#003366",
     requiredTier: "Gold",
   },
   {
@@ -41,15 +41,15 @@ export const tools = [
     color: "#8B5CF6",
     requiredTier: "Silver",
   },
-
-  // ✅ NEW
   {
     id: "5",
-    title: "QR Scanner",
-    icon: "qrcode",
-    color: "#22C55E",
-    requiredTier: "Gold",
+    title: "Notes Pro",
+    icon: "sticky-note",
+    color: "#EF4444",
+    requiredTier: "Silver",
   },
+  // ✅ NEW
+
 
   // {
   //   id: "6",
@@ -88,11 +88,12 @@ export const tools = [
   },
   {
     id: "11",
-    title: "Notes Pro",
-    icon: "sticky-note",
-    color: "#8B5CF6",
-    requiredTier: "Platinum",
+    title: "QR Scanner",
+    icon: "qrcode",
+    color: "#22C55E",
+    requiredTier: "Gold",
   },
+
 
   // ✅ NEW
   {
@@ -114,7 +115,7 @@ export const tools = [
     id: "16",
     title: "Tip Calculator",
     icon: "hand-holding-usd",
-    color: "#8B5CF6",
+    color: "#FF8C00",
     requiredTier: "Silver",
   },
   {
