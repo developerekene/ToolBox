@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { PaystackProvider, usePaystack } from "react-native-paystack-webview";
 import {
   convertGBPtoKobo,
-  // PAYSTACK_PUBLIC_KEY,
-  PAYSTACK_TEST_KEY,
+  PAYSTACK_PUBLIC_KEY,
+  // PAYSTACK_TEST_KEY,
 } from "../../../utils/constant/paystackPayment";
 
 const AutoStartPaystack: React.FC<{
@@ -71,8 +71,8 @@ const PaystackPaymentConfig: React.FC<Props> = ({
 
       {/* Removed onGlobalSuccess and onGlobalCancel — was causing duplicate calls */}
       <PaystackProvider
-        // publicKey={PAYSTACK_PUBLIC_KEY}
-        publicKey={PAYSTACK_TEST_KEY}
+        publicKey={PAYSTACK_PUBLIC_KEY}
+        // publicKey={PAYSTACK_TEST_KEY}
         defaultChannels={["card", "bank", "ussd", "mobile_money"]}
         currency="NGN"
       >
