@@ -39,6 +39,24 @@ import InvestmentCalc from "./platinium/InvestmentCalc";
 import FuelCostCalc from "./platinium/FuelCostCalc";
 import MortgageCalc from "./platinium/MortgageCalc";
 
+// new tools
+import AIDetector from "../toolbox/newtools/AIDetector";
+import AlgebraCalculator from "../toolbox/newtools/AlgebraCalculator";
+import BackgroundRemover from "../toolbox/newtools/BackgroundRemover";
+import BooleanCombinator from "../toolbox/newtools/BooleanCombinator";
+import Calender from "../toolbox/newtools/Calender";
+import FileCompressor from "../toolbox/newtools/FileCompressor";
+import FileConverter from "../toolbox/newtools/FileConverter";
+import FileEditor from "../toolbox/newtools/FileEditor";
+import FileFillSign from "../toolbox/newtools/FileFillSign";
+import ImageEditor from "../toolbox/newtools/ImageEditor";
+import KeywordGenerator from "../toolbox/newtools/KeywordGenerator";
+import PdfEditor from "../toolbox/newtools/PdfEditor";
+import Phrasebook from "../toolbox/newtools/Phrasebook";
+import PlagiarismChecker from "../toolbox/newtools/PlagiarismChecker";
+import SearchTracker from "../toolbox/newtools/SearchTracker";
+import TimeAlert from "../toolbox/newtools/TimeAlert";
+
 // Membership Modal
 import MembershipModal, { Tier } from "./MembershipModal";
 import CheckoutModal from "./CheckoutModal";
@@ -186,6 +204,55 @@ const ToolboxsScreen: React.FC = () => {
 
       case "Mortgage Calc":
         return <MortgageCalc />;
+
+      // new tools
+      case "AI Detector":
+        return <AIDetector />;
+
+      case "Algebra Calculator":
+        return <AlgebraCalculator />;
+
+      case "Background Remover":
+        return <BackgroundRemover />;
+
+      case "Boolean Combinator":
+        return <BooleanCombinator />;
+
+      case "Calender":
+        return <Calender />;
+
+      case "File Compressor":
+        return <FileCompressor />;
+
+      case "File Converter":
+        return <FileConverter />;
+
+      case "File Editor":
+        return <FileEditor />;
+
+      case "File Fill & Sign":
+        return <FileFillSign />;
+
+      case "Image Editor":
+        return <ImageEditor />;
+
+      case "Keyword Generator":
+        return <KeywordGenerator />;
+
+      case "PDF Editor":
+        return <PdfEditor />;
+
+      case "Phrasebook":
+        return <Phrasebook />;
+
+      case "Plagiarism Checker":
+        return <PlagiarismChecker />;
+
+      case "Search Tracker":
+        return <SearchTracker />;
+
+      case "Time Alert":
+        return <TimeAlert />;
 
       default:
         return (
