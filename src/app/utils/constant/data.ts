@@ -50,7 +50,6 @@ export const tools = [
   },
   // ✅ NEW
 
-
   // {
   //   id: "6",
   //   title: "Video Trim",
@@ -93,7 +92,6 @@ export const tools = [
     color: "#22C55E",
     requiredTier: "Gold",
   },
-
 
   // ✅ NEW
   {
@@ -158,6 +156,119 @@ export const tools = [
     title: "Mortgage Calc",
     icon: "home",
     color: "#8B5CF6",
+    requiredTier: "Platinum",
+  },
+  // ✅ NEW TOOLS
+  {
+    id: "23",
+    title: "Algebra Calculator",
+    icon: "superscript",
+    color: "#7C3AED",
+    requiredTier: "Gold",
+  },
+  {
+    id: "24",
+    title: "Background Remover",
+    icon: "magic",
+    color: "#06B6D4",
+    requiredTier: "Gold",
+  },
+  {
+    id: "25",
+    title: "File Converter",
+    icon: "file-export",
+    color: "#F97316",
+    requiredTier: "Gold",
+  },
+  {
+    id: "26",
+    title: "File Compressor",
+    icon: "file-archive",
+    color: "#84CC16",
+    requiredTier: "Gold",
+  },
+  {
+    id: "27",
+    title: "PDF Editor",
+    icon: "file-signature",
+    color: "#DC2626",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "28",
+    title: "File Editor",
+    icon: "file-alt",
+    color: "#2563EB",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "29",
+    title: "Form Fill & Sign",
+    icon: "pen-fancy",
+    color: "#059669",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "30",
+    title: "Image Editor",
+    icon: "paint-brush",
+    color: "#DB2777",
+    requiredTier: "Gold",
+  },
+  {
+    id: "31",
+    title: "Time Alert",
+    icon: "bell",
+    color: "#D97706",
+    requiredTier: "Silver",
+  },
+  {
+    id: "32",
+    title: "Calendar",
+    icon: "calendar-alt",
+    color: "#0284C7",
+    requiredTier: "Silver",
+  },
+  {
+    id: "33",
+    title: "Phrasebook",
+    icon: "book-open",
+    color: "#7C3AED",
+    requiredTier: "Gold",
+  },
+  {
+    id: "34",
+    title: "Keywords Generator",
+    icon: "tags",
+    color: "#0D9488",
+    requiredTier: "Gold",
+  },
+  {
+    id: "35",
+    title: "Boolean Combinator",
+    icon: "sitemap",
+    color: "#4F46E5",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "36",
+    title: "Search Tracker",
+    icon: "search-plus",
+    color: "#B45309",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "37",
+    title: "AI Detector",
+    icon: "robot",
+    color: "#6D28D9",
+    requiredTier: "Platinum",
+  },
+  {
+    id: "38",
+    title: "Plagiarism Checker",
+    icon: "shield-alt",
+    color: "#047857",
     requiredTier: "Platinum",
   },
 ];
