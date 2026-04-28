@@ -44,7 +44,7 @@ import AIDetector from "../toolbox/newtools/AIDetector";
 import AlgebraCalculator from "../toolbox/newtools/AlgebraCalculator";
 import BackgroundRemover from "../toolbox/newtools/BackgroundRemover";
 import BooleanCombinator from "../toolbox/newtools/BooleanCombinator";
-import Calendar from "./newtools/calendar/Calendar";
+import Calender from "../toolbox/newtools/Calender";
 import FileCompressor from "../toolbox/newtools/FileCompressor";
 import FileConverter from "../toolbox/newtools/FileConverter";
 import FileEditor from "../toolbox/newtools/FileEditor";
@@ -62,7 +62,6 @@ import MembershipModal, { Tier } from "./MembershipModal";
 import CheckoutModal from "./CheckoutModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tools } from "../../../utils/constant/data";
-import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
 
 const ToolboxsScreen: React.FC = () => {
   const handleClose = () => {
@@ -203,12 +202,8 @@ const ToolboxsScreen: React.FC = () => {
       case "Boolean Combinator":
         return <BooleanCombinator />;
 
-      case "Calendar":
-        return (
-          <CalendarProvider>
-            <Calendar />
-          </CalendarProvider>
-        );
+      case "Calender":
+        return <Calender />;
 
       case "File Compressor":
         return <FileCompressor />;
