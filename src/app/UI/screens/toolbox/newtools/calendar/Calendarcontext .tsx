@@ -147,7 +147,7 @@ const SEED_EVENTS: CalendarEvent[] = [
   },
 ];
 
-// ─── State & Actions
+// ─── State & Actions ──────────────────────────────────────────────────────────
 
 interface CalendarState {
   events: CalendarEvent[];
@@ -207,7 +207,7 @@ function reducer(state: CalendarState, action: Action): CalendarState {
     case "SET_VIEW":
       return { ...state, viewMode: action.mode };
     case "TOGGLE_CATEGORY": {
-      const has = state.activeCategories.indexOf(action.category) !== -1;
+      const has = state.activeCategories.includes(action.category);
       return {
         ...state,
         activeCategories: has
@@ -231,7 +231,7 @@ function reducer(state: CalendarState, action: Action): CalendarState {
   }
 }
 
-// ─── Context
+// ─── Context ──────────────────────────────────────────────────────────────────
 
 interface CalendarContextValue {
   state: CalendarState;
@@ -296,7 +296,7 @@ export const CalendarProvider = ({ children }: { children: ReactNode }) => {
 
   // Filter events by active categories and search
   const filteredEvents = state.events.filter((e) => {
-    if (state.activeCategories.indexOf(e.category) === -1) return false;
+    if (!state.activeCategories.includes(e.category)) return false;
     if (state.searchQuery) {
       const q = state.searchQuery.toLowerCase();
       return (

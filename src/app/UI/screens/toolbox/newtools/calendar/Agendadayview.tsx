@@ -18,7 +18,7 @@ import {
   formatTime,
   formatDateDisplay,
 } from "../../../../../utils/constant/calendar/calendarutils";
-import { useCalendar } from "../../newtools/calendar/CalendarContext";
+import { useCalendar } from "../../newtools/calendar/Calendarcontext ";
 import { CalendarEvent } from "../../../../../utils/constant/calendar/types";
 
 // ─── Agenda View ──────────────────────────────────────────────────────────────

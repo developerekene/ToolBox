@@ -1,9 +1,3 @@
-/**
- * CalendarScreen.tsx
- * Root screen — renders the header, the active view, and the FAB.
- * Manages the event modal state.
- */
-
 import React, { useState } from "react";
 import {
   View,
@@ -14,16 +8,16 @@ import {
   StatusBar,
 } from "react-native";
 import { THEME } from "../../../../../utils/constant/calendar/types";
-import { useCalendar } from "../../newtools/calendar/CalendarContext";
-import CalendarHeader from "../../newtools/calendar/CalendarHeader";
-import MonthView from "../../newtools/calendar/MonthView";
-import WeekView from "../../newtools/calendar/WeekView";
-import { AgendaView, DayView } from "../../newtools/calendar/Agendadayview";
-import EventModal from "../../newtools/calendar/EventModal";
-import StatsStrip from "../../newtools/calendar/StatsStrip";
+import { useCalendar } from "./Calendarcontext ";
+import CalendarHeader from "./Calendarheader";
+import MonthView from "./Monthview";
+import WeekView from "./Weekview";
+import { AgendaView, DayView } from "./Agendadayview";
+import EventModal from "./Eventmodal";
+import StatsStrip from "./Statsstrip";
 import { CalendarEvent } from "../../../../../utils/constant/calendar/types";
 
-export default function CalendarScreen() {
+export default function Calendar() {
   const { state } = useCalendar();
   const [modalVisible, setModalVisible] = useState(false);
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);

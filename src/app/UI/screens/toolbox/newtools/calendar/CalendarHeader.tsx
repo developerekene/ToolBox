@@ -24,7 +24,7 @@ import {
   addMonths,
   getWeekDates,
 } from "../../../../../utils/constant/calendar/calendarutils";
-import { useCalendar } from "../../newtools/calendar/CalendarContext";
+import { useCalendar } from "../../newtools/calendar/Calendarcontext ";
 
 const VIEW_TABS: { key: ViewMode; label: string }[] = [
   { key: "month", label: "Month" },

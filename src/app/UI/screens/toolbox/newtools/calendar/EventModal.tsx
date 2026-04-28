@@ -24,7 +24,7 @@ import {
   EventCategory,
   RecurrenceType,
 } from "../../../../../utils/constant/calendar/types";
-import { useCalendar } from "../../newtools/calendar/CalendarContext";
+import { useCalendar } from "../../newtools/calendar/Calendarcontext ";
 import { CalendarEvent } from "../../../../../utils/constant/calendar/types";
 
 interface Props {

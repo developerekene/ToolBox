@@ -1,3 +1,9 @@
+/**
+ * StatsStrip.tsx
+ * Horizontal scrollable bar showing event counts by category for the current month.
+ * Also shows a streak counter and upcoming reminder badge.
+ */
+
 import React, { useMemo } from "react";
 import {
   View,
@@ -12,7 +18,7 @@ import {
   CATEGORY_LABELS,
   EventCategory,
 } from "../../../../../utils/constant/calendar/types";
-import { useCalendar } from "../../newtools/calendar/CalendarContext";
+import { useCalendar } from "../../newtools/calendar/Calendarcontext ";
 import {
   getEventsForDate,
   addDays,
@@ -24,19 +30,6 @@ export default function StatsStrip() {
 
   const monthStr = state.selectedDate.substring(0, 7);
 
-  //   const stats = useMemo(() => {
-  //     const counts: Partial<Record<EventCategory, number>> = {};
-  //     filteredEvents.forEach((e) => {
-  //       if (e.date.startsWith(monthStr)) {
-  //         counts[e.category] = (counts[e.category] || 0) + 1;
-  //       }
-  //     });
-  //     return Object.keys(counts)
-  //       .map((key) => [key as EventCategory, counts[key]!] as [EventCategory, number])
-  //       .sort(([, a], [, b]) => b - a)
-  //       .slice(0, 5);
-  //   }, [filteredEvents, monthStr]);
-
   const stats = useMemo(() => {
     const counts: Partial<Record<EventCategory, number>> = {};
     filteredEvents.forEach((e) => {
@@ -44,16 +37,9 @@ export default function StatsStrip() {
         counts[e.category] = (counts[e.category] || 0) + 1;
       }
     });
-    return Object.keys(counts)
-      .map(
-        (key) =>
-          [key as EventCategory, counts[key as EventCategory]!] as [
-            EventCategory,
-            number,
-          ],
-      )
+    return Object.entries(counts)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 5);
+      .slice(0, 5) as [EventCategory, number][];
   }, [filteredEvents, monthStr]);
 
   // Upcoming count: next 7 days

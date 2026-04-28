@@ -15,7 +15,7 @@ import {
   addMonths,
   formatMonthYear,
 } from "../../../../../utils/constant/calendar/calendarutils";
-import { useCalendar } from "../../newtools/calendar/CalendarContext";
+import { useCalendar } from "../../newtools/calendar/Calendarcontext ";
 import { DayData } from "../../../../../utils/constant/calendar/types";
 
 const { width: W } = Dimensions.get("window");

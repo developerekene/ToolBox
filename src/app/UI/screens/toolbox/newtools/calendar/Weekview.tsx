@@ -17,7 +17,7 @@ import {
   todayStr,
   formatTime,
 } from "../../../../../utils/constant/calendar/calendarutils";
-import { useCalendar } from "../../newtools/calendar/CalendarContext";
+import { useCalendar } from "../../newtools/calendar/Calendarcontext ";
 
 const { width: W } = Dimensions.get("window");
 const TIME_COL_W = 48;
@@ -130,8 +130,7 @@ export default function WeekView() {
                   const [sh, sm] = evt.startTime!.split(":").map(Number);
                   const startMins = sh * 60 + sm;
                   const [eh, em] = (
-                    evt.endTime ||
-                    `${sh + 1}:${sm < 10 ? "0" + sm : String(sm)}`
+                    evt.endTime || `${sh + 1}:${String(sm).padStart(2, "0")}`
                   )
                     .split(":")
                     .map(Number);
