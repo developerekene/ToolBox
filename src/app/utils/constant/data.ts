@@ -79,6 +79,20 @@ export const tools = [
   //   requiredTier: "Platinum",
   // },
   {
+    id: "31",
+    title: "Time Alert",
+    icon: "bell",
+    color: "#D97706",
+    requiredTier: "Silver",
+  },
+  {
+    id: "32",
+    title: "Calendar",
+    icon: "calendar-alt",
+    color: "#0284C7",
+    requiredTier: "Silver",
+  },
+  {
     id: "10",
     title: "Zip Creator",
     icon: "file-archive",
@@ -215,20 +229,7 @@ export const tools = [
     color: "#DB2777",
     requiredTier: "Gold",
   },
-  {
-    id: "31",
-    title: "Time Alert",
-    icon: "bell",
-    color: "#D97706",
-    requiredTier: "Silver",
-  },
-  {
-    id: "32",
-    title: "Calendar",
-    icon: "calendar-alt",
-    color: "#0284C7",
-    requiredTier: "Silver",
-  },
+  
   {
     id: "33",
     title: "Phrasebook",
