@@ -44,7 +44,7 @@ import AIDetector from "../toolbox/newtools/AIDetector";
 import AlgebraCalculator from "../toolbox/newtools/AlgebraCalculator";
 import BackgroundRemover from "../toolbox/newtools/BackgroundRemover";
 import BooleanCombinator from "../toolbox/newtools/BooleanCombinator";
-import Calender from "../toolbox/newtools/Calender";
+import Calender from "./newtools/calendar/Calender";
 import FileCompressor from "../toolbox/newtools/FileCompressor";
 import FileConverter from "../toolbox/newtools/FileConverter";
 import FileEditor from "../toolbox/newtools/FileEditor";
