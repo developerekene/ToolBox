@@ -62,8 +62,11 @@ import MembershipModal, { Tier } from "./MembershipModal";
 import CheckoutModal from "./CheckoutModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tools } from "../../../utils/constant/data";
+import { useNavigation } from "@react-navigation/native";
 
 const ToolboxsScreen: React.FC = () => {
+  const navigation = useNavigation<any>();
+
   const handleClose = () => {
     setSelectedTool(null);
   };
@@ -310,12 +313,17 @@ const ToolboxsScreen: React.FC = () => {
           onChangeText={setSearchQuery}
           clearButtonMode="while-editing"
         />
-        <Ionicons
-          name="close"
-          size={16}
-          color="#64748b"
-          style={styles.searchIcon}
-        />
+
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery("")}>
+            <Ionicons
+              name="close"
+              size={16}
+              color="#64748b"
+              style={styles.searchIcon}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView
@@ -409,9 +417,10 @@ const ToolboxsScreen: React.FC = () => {
 
             <TouchableOpacity
               style={styles.fabOption}
-              onPress={() => {
-                /* Handle Contact */
-              }}
+              onPress={() => navigation.navigate("Contact")}
+              // onPress={() => {
+              //   /* Handle Contact */
+              // }}
             >
               <Ionicons name="mail-outline" size={22} color="#fff" />
               <Text style={styles.fabOptionText}>Contact Us</Text>
