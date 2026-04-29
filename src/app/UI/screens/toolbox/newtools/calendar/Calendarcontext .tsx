@@ -231,7 +231,7 @@ function reducer(state: CalendarState, action: Action): CalendarState {
   }
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
+// ─── Context
 
 interface CalendarContextValue {
   state: CalendarState;
