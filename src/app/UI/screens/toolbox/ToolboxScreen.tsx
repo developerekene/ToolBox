@@ -44,7 +44,7 @@ import AIDetector from "../toolbox/newtools/AIDetector";
 import AlgebraCalculator from "../toolbox/newtools/AlgebraCalculator";
 import BackgroundRemover from "../toolbox/newtools/BackgroundRemover";
 import BooleanCombinator from "../toolbox/newtools/BooleanCombinator";
-import Calender from "../toolbox/newtools/Calender";
+import Calendar from "../toolbox/newtools/calendar/Calendar";
 import FileCompressor from "../toolbox/newtools/FileCompressor";
 import FileConverter from "../toolbox/newtools/FileConverter";
 import FileEditor from "../toolbox/newtools/FileEditor";
@@ -202,8 +202,8 @@ const ToolboxsScreen: React.FC = () => {
       case "Boolean Combinator":
         return <BooleanCombinator />;
 
-      case "Calender":
-        return <Calender />;
+      case "Calendar":
+        return <Calendar />;
 
       case "File Compressor":
         return <FileCompressor />;
@@ -407,7 +407,12 @@ const ToolboxsScreen: React.FC = () => {
 
             <Text style={styles.fabModalTitle}>Quick Actions</Text>
 
-            <TouchableOpacity style={styles.fabOption} onPress={() => {/* Handle Contact */ }}>
+            <TouchableOpacity
+              style={styles.fabOption}
+              onPress={() => {
+                /* Handle Contact */
+              }}
+            >
               <Ionicons name="mail-outline" size={22} color="#fff" />
               <Text style={styles.fabOptionText}>Contact Us</Text>
             </TouchableOpacity>
@@ -559,17 +564,17 @@ const styles = StyleSheet.create({
 
   // FAB Styling
   fab: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 30,
     right: 20,
-    backgroundColor: '#F59E0B', // Matching your upgrade button color
+    backgroundColor: "#F59E0B", // Matching your upgrade button color
     width: 60,
     height: 60,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -578,54 +583,54 @@ const styles = StyleSheet.create({
   // FAB Modal Styling
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
   },
   fabModalContent: {
-    backgroundColor: '#1e293b',
+    backgroundColor: "#1e293b",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
     paddingBottom: 40,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalHandle: {
     width: 40,
     height: 5,
-    backgroundColor: '#475569',
+    backgroundColor: "#475569",
     borderRadius: 3,
     marginBottom: 20,
   },
   fabModalTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 20,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   fabOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
     padding: 15,
-    backgroundColor: '#0f172a',
+    backgroundColor: "#0f172a",
     borderRadius: 12,
     marginBottom: 12,
   },
   fabOptionText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
     marginLeft: 15,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   closeOption: {
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
+    backgroundColor: "transparent",
+    justifyContent: "center",
     marginTop: 5,
   },
   closeOptionText: {
-    color: '#ef4444',
-    fontWeight: '700',
+    color: "#ef4444",
+    fontWeight: "700",
   },
 });
 
