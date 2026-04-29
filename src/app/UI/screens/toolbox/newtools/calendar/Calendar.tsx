@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const AlgebraCalculator = () => {
+const Calendar = () => {
   return (
     <View>
-      <Text>AlgebraCalculator</Text>
+      <Text>Calendar</Text>
     </View>
   );
 };
 
-export default AlgebraCalculator;
+export default Calendar;
