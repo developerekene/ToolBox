@@ -63,6 +63,9 @@ import CheckoutModal from "./CheckoutModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tools } from "../../../utils/constant/data";
 
+import Contact from "./Contact";
+import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
+
 const ToolboxsScreen: React.FC = () => {
   const handleClose = () => {
     setSelectedTool(null);
@@ -78,6 +81,7 @@ const ToolboxsScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [fabVisible, setFabVisible] = useState(false);
+  const [contactVisible, setContactVisible] = useState(false);
 
   const isTierAccessible = (required: string) => {
     const tiers = ["Silver", "Gold", "Platinum"];
@@ -203,7 +207,11 @@ const ToolboxsScreen: React.FC = () => {
         return <BooleanCombinator />;
 
       case "Calendar":
-        return <Calendar />;
+        return (
+          <CalendarProvider>
+            <Calendar />
+          </CalendarProvider>
+        );
 
       case "File Compressor":
         return <FileCompressor />;
@@ -310,12 +318,17 @@ const ToolboxsScreen: React.FC = () => {
           onChangeText={setSearchQuery}
           clearButtonMode="while-editing"
         />
-        <Ionicons
-          name="close"
-          size={16}
-          color="#64748b"
-          style={styles.searchIcon}
-        />
+
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery("")}>
+            <Ionicons
+              name="close"
+              size={16}
+              color="#64748b"
+              style={styles.searchIcon}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView
@@ -410,8 +423,13 @@ const ToolboxsScreen: React.FC = () => {
             <TouchableOpacity
               style={styles.fabOption}
               onPress={() => {
-                /* Handle Contact */
+                setFabVisible(false); // close the FAB sheet first
+                setContactVisible(true); // then open contact modal
               }}
+
+              // onPress={() => {
+              //   /* Handle Contact */
+              // }}
             >
               <Ionicons name="mail-outline" size={22} color="#fff" />
               <Text style={styles.fabOptionText}>Contact Us</Text>
@@ -425,6 +443,28 @@ const ToolboxsScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
+      </Modal>
+      {/* contact modal */}
+      {/* Contact Modal */}
+      <Modal
+        visible={contactVisible}
+        animationType="slide"
+        onRequestClose={() => setContactVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Contact Us</Text>
+            <TouchableOpacity
+              onPress={() => setContactVisible(false)}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close" size={26} color="#fff" />
+            </TouchableOpacity>
+          </View>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Contact />
+          </ScrollView>
+        </View>
       </Modal>
     </View>
   );
