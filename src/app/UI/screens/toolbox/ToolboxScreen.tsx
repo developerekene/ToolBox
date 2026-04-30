@@ -64,6 +64,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tools } from "../../../utils/constant/data";
 
 import Contact from "./Contact";
+import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
 
 const ToolboxsScreen: React.FC = () => {
   const handleClose = () => {
@@ -206,7 +207,11 @@ const ToolboxsScreen: React.FC = () => {
         return <BooleanCombinator />;
 
       case "Calendar":
-        return <Calendar />;
+        return (
+          <CalendarProvider>
+            <Calendar />
+          </CalendarProvider>
+        );
 
       case "File Compressor":
         return <FileCompressor />;

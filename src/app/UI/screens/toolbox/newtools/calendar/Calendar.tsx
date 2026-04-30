@@ -1,12 +1,118 @@
-import { View, Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
+import { THEME } from "../../../../../utils/constant/calendar/types";
+import { useCalendar } from "../../newtools/calendar/Calendarcontext ";
+import CalendarHeader from "../../newtools/calendar/Calendarheader";
+import MonthView from "../../newtools/calendar/Monthview ";
+import WeekView from "../../newtools/calendar/Weekview";
+import { AgendaView, DayView } from "../../newtools/calendar/Agendadayview";
+import EventModal from "../../newtools/calendar/Eventmodal";
+import StatsStrip from "../../newtools/calendar/Statsstrip";
+import { CalendarEvent } from "../../../../../utils/constant/calendar/types";
 
-const Calendar = () => {
+export default function Calendar() {
+  const { state } = useCalendar();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
+
+  const openAdd = () => {
+    setEditingEvent(null);
+    setModalVisible(true);
+  };
+
+  const openEdit = (event: CalendarEvent) => {
+    setEditingEvent(event);
+    setModalVisible(true);
+  };
+
+  const renderView = () => {
+    switch (state.viewMode) {
+      case "month":
+        return <MonthView />;
+      case "week":
+        return <WeekView />;
+      case "day":
+        return <DayView />;
+      case "agenda":
+        return <AgendaView />;
+    }
+  };
+
   return (
-    <View>
-      <Text>Calendar</Text>
-    </View>
-  );
-};
+    <SafeAreaView style={styles.safe}>
+      <StatusBar barStyle="light-content" backgroundColor={THEME.bg} />
+      <View style={styles.container}>
+        {/* Header */}
+        <CalendarHeader />
 
-export default Calendar;
+        {/* Active view */}
+        <View style={styles.viewContainer}>{renderView()}</View>
+
+        {/* Stats strip — only in month view */}
+        {state.viewMode === "month" && <StatsStrip />}
+
+        {/* FAB */}
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={openAdd}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.fabIcon}>+</Text>
+        </TouchableOpacity>
+
+        {/* Event modal */}
+        <EventModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          editEvent={editingEvent}
+          defaultDate={state.selectedDate}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: THEME.bg,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: THEME.bg,
+  },
+  viewContainer: {
+    flex: 1,
+    paddingTop: 8,
+  },
+  fab: {
+    position: "absolute",
+    bottom: 28,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: THEME.gold,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: THEME.gold,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.45,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  fabIcon: {
+    fontSize: 28,
+    color: "#000",
+    fontWeight: "700",
+    lineHeight: 32,
+    marginTop: -2,
+  },
+});

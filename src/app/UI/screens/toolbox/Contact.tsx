@@ -85,11 +85,6 @@ async function sendEmail(data: FormData): Promise<void> {
     },
   };
 
-  //   const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(payload),
-  //   });
   // added origin header
 
   const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
