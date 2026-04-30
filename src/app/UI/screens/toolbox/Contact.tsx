@@ -26,9 +26,6 @@ type Status = "idle" | "loading" | "success" | "error";
 
 const TITLE_OPTIONS = [
   "General Enquiry",
-  "Frontend Development",
-  "Backend Development",
-  "UI/UX Design",
   "Mobile App",
   "Consultation",
   "Partnership",
@@ -88,9 +85,19 @@ async function sendEmail(data: FormData): Promise<void> {
     },
   };
 
+  //   const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(payload),
+  //   });
+  // added origin header
+
   const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      origin: "http://localhost", // required for non-browser environments
+    },
     body: JSON.stringify(payload),
   });
 
@@ -293,10 +300,7 @@ export default function ContactForm() {
         <View style={styles.headerWrap}>
           <View style={styles.headerAccent} />
           <Text style={styles.headerTitle}>Get in Touch</Text>
-          <Text style={styles.headerSub}>
-            Tell us about your project and we'll get back to you within 3
-            business days.
-          </Text>
+          <Text style={styles.headerSub}>Send a meassage to our team...</Text>
         </View>
 
         {status === "success" ? (

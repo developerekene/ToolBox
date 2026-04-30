@@ -62,11 +62,10 @@ import MembershipModal, { Tier } from "./MembershipModal";
 import CheckoutModal from "./CheckoutModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tools } from "../../../utils/constant/data";
-import { useNavigation } from "@react-navigation/native";
+
+import Contact from "./Contact";
 
 const ToolboxsScreen: React.FC = () => {
-  const navigation = useNavigation<any>();
-
   const handleClose = () => {
     setSelectedTool(null);
   };
@@ -81,6 +80,7 @@ const ToolboxsScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [fabVisible, setFabVisible] = useState(false);
+  const [contactVisible, setContactVisible] = useState(false);
 
   const isTierAccessible = (required: string) => {
     const tiers = ["Silver", "Gold", "Platinum"];
@@ -417,7 +417,11 @@ const ToolboxsScreen: React.FC = () => {
 
             <TouchableOpacity
               style={styles.fabOption}
-              onPress={() => navigation.navigate("Contact")}
+              onPress={() => {
+                setFabVisible(false); // close the FAB sheet first
+                setContactVisible(true); // then open contact modal
+              }}
+
               // onPress={() => {
               //   /* Handle Contact */
               // }}
@@ -434,6 +438,28 @@ const ToolboxsScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
+      </Modal>
+      {/* contact modal */}
+      {/* Contact Modal */}
+      <Modal
+        visible={contactVisible}
+        animationType="slide"
+        onRequestClose={() => setContactVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Contact Us</Text>
+            <TouchableOpacity
+              onPress={() => setContactVisible(false)}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close" size={26} color="#fff" />
+            </TouchableOpacity>
+          </View>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Contact />
+          </ScrollView>
+        </View>
       </Modal>
     </View>
   );
