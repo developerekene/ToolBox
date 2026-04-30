@@ -300,7 +300,7 @@ export default function ContactForm() {
         <View style={styles.headerWrap}>
           <View style={styles.headerAccent} />
           <Text style={styles.headerTitle}>Get in Touch</Text>
-          <Text style={styles.headerSub}>Send a meassage to our team...</Text>
+          <Text style={styles.headerSub}>Send a meassage to our team</Text>
         </View>
 
         {status === "success" ? (
@@ -355,7 +355,7 @@ export default function ContactForm() {
             {/* Message */}
             <FieldInput
               label="Message"
-              placeholder="Describe your project or enquiry…"
+              placeholder="Send a meassage..."
               value={form.message}
               onChangeText={set("message")}
               error={errors.message}
