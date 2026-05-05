@@ -55,7 +55,7 @@ import PdfEditor from "../toolbox/newtools/PdfEditor";
 import Phrasebook from "../toolbox/newtools/Phrasebook";
 import PlagiarismChecker from "../toolbox/newtools/PlagiarismChecker";
 import SearchTracker from "../toolbox/newtools/SearchTracker";
-import TimeAlert from "../toolbox/newtools/TimeAlert";
+import TimeAlert from "./newtools/timealert/TimeAlert";
 
 // Membership Modal
 import MembershipModal, { Tier } from "./MembershipModal";
@@ -72,7 +72,7 @@ const ToolboxsScreen: React.FC = () => {
   };
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [userTier, setUserTier] = useState<Tier>("Silver");
+  const [userTier, setUserTier] = useState<Tier>("Platinum");
   const [membershipVisible, setMembershipVisible] = useState(false);
 
   const [checkoutVisible, setCheckoutVisible] = useState(false);
