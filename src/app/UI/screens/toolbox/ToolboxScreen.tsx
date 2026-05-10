@@ -91,7 +91,9 @@ const ToolboxsScreen: React.FC = () => {
   useEffect(() => {
     const loadUser = async () => {
       const savedTier = await AsyncStorage.getItem("userTier");
+      // console.log(savedTier)
       const savedExpiry = await AsyncStorage.getItem("tierExpiry");
+      // console.log(savedExpiry)
 
       if (savedTier && savedExpiry) {
         const expiry = new Date(savedExpiry);
@@ -427,9 +429,9 @@ const ToolboxsScreen: React.FC = () => {
                 setContactVisible(true); // then open contact modal
               }}
 
-              // onPress={() => {
-              //   /* Handle Contact */
-              // }}
+            // onPress={() => {
+            //   /* Handle Contact */
+            // }}
             >
               <Ionicons name="mail-outline" size={22} color="#fff" />
               <Text style={styles.fabOptionText}>Contact Us</Text>
