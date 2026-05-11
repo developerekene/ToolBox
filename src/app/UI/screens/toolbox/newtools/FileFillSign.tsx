@@ -1,10 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { ComingSoon } from "../../../component/CoomingSoon";
 
 const FileFillSign = () => {
   return (
     <View>
-      <Text>FileFillSign</Text>
+      <ComingSoon />
     </View>
   );
 };

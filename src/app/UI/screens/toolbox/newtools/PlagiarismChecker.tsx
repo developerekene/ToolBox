@@ -1,10 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { ComingSoon } from "../../../component/CoomingSoon";
 
 const PlagiarismChecker = () => {
   return (
     <View>
-      <Text>PlagiarismChecker</Text>
+      <ComingSoon />
     </View>
   );
 };
