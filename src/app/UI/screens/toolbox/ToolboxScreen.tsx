@@ -9,8 +9,10 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import Toast from 'react-native-toast-message';
 
 // Silver Tools
 import CropToolScreen from "./silver/CropToolScreen";
@@ -125,60 +127,31 @@ const ToolboxsScreen: any = () => {
   }, []);
 
   const updateCustomerStatus = useCallback(async () => {
-    try {
-      // 1. Check RevenueCat (Primary source of truth)
-      const isConfigured = await Purchases.isConfigured();
-      if (isConfigured) {
-        const customerInfo = await Purchases.getCustomerInfo();
+    const customerInfo = await Purchases.getCustomerInfo();
 
-        if (customerInfo.entitlements.active['platinum_access']) {
-          setUserTier("Platinum");
-          await AsyncStorage.setItem("userTier", "Platinum"); // Sync storage
-        } else if (customerInfo.entitlements.active['gold_access']) {
-          setUserTier("Gold");
-          await AsyncStorage.setItem("userTier", "Gold"); // Sync storage
-        } else {
-          // 2. If no active RC sub, check if we have a manually set tier in Storage
-          const savedTier = await AsyncStorage.getItem("userTier");
-          const savedExpiry = await AsyncStorage.getItem("tierExpiry");
+    // Check entitlements exactly as named in RevenueCat Dashboard
+    const isPlatinum = customerInfo.entitlements.active['platinum_access'];
+    const isGold = customerInfo.entitlements.active['gold_access'];
 
-          if (savedTier && savedExpiry) {
-            const now = new Date();
-            const expiry = new Date(savedExpiry);
-            if (now < expiry) {
-              setUserTier(savedTier as Tier);
-            } else {
-              setUserTier("Silver");
-            }
-          } else {
-            setUserTier("Silver");
-          }
-        }
-      }
-    } catch (e) {
-      console.log("Error syncing status:", e);
-    } finally {
-      setTierLoaded(true);
+    if (isPlatinum) {
+      setUserTier("Platinum");
+    } else if (isGold) {
+      setUserTier("Gold");
+    } else {
+      setUserTier("Silver");
     }
   }, []);
 
   useEffect(() => {
     updateCustomerStatus();
 
-    // Listen for real-time RC updates
     const listener = () => updateCustomerStatus();
     Purchases.addCustomerInfoUpdateListener(listener);
-    // Note: No cleanup needed for the standard listener in newer SDKs
   }, [updateCustomerStatus]);
-
-  // --- REMAINDER OF YOUR RENDER FUNCTIONS ---
-
-  // 4. PREVENT EARLY RETURNS HERE
   const filteredTools = tools.filter((tool) =>
     tool.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  // ONLY return early at the very end of the logic
   if (!tierLoaded) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -188,9 +161,39 @@ const ToolboxsScreen: any = () => {
   }
 
   const handlePresentPaywall = async () => {
-    const result: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
-    if (result === PAYWALL_RESULT.PURCHASED || result === PAYWALL_RESULT.RESTORED) {
-      updateCustomerStatus(); // Refresh the UI tier
+    try {
+      // 1. Launch the Native RevenueCat Paywall
+      const result: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
+
+      // 2. Handle the outcome of the paywall interaction
+      switch (result) {
+        case PAYWALL_RESULT.PURCHASED:
+        case PAYWALL_RESULT.RESTORED:
+          // The user successfully spent money or recovered an old sub.
+          // We MUST re-run our status check to unlock the Gold/Platinum tools.
+          await updateCustomerStatus();
+          break;
+
+        case PAYWALL_RESULT.CANCELLED:
+          // User closed the paywall without buying. 
+          // Usually, you do nothing here, but you could log this for analytics.
+          break;
+
+        case PAYWALL_RESULT.ERROR:
+          // Something went wrong (no internet, Apple/Google Store down).
+          Alert.alert("Error", "Could not process purchase. Please try again.");
+          Toast.show({
+            type: 'error',
+            text1: 'Failed',
+            text2: "Could not process purchase. Please try again. 🚫",
+          });
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Paywall Error:", error);
     }
   };
 
