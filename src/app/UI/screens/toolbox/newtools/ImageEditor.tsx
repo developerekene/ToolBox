@@ -1,7 +1,3 @@
-// App.tsx
-// Complete React Native Mobile Image Editor App
-// Expo + TypeScript
-
 import React, { useState } from "react";
 import {
   View,
