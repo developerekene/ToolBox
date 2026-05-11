@@ -9,7 +9,6 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import Toast from 'react-native-toast-message';
@@ -181,7 +180,6 @@ const ToolboxsScreen: any = () => {
 
         case PAYWALL_RESULT.ERROR:
           // Something went wrong (no internet, Apple/Google Store down).
-          Alert.alert("Error", "Could not process purchase. Please try again.");
           Toast.show({
             type: 'error',
             text1: 'Failed',

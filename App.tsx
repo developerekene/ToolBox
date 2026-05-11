@@ -3,7 +3,7 @@ import ToolboxsScreen from './src/app/UI/screens/toolbox/ToolboxScreen';
 import { Platform } from 'react-native';
 import { useEffect } from 'react';
 import Purchases, { LOG_LEVEL } from 'react-native-purchases';
-
+import Toast from 'react-native-toast-message';
 
 export default function App() {
 
@@ -32,6 +32,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ToolboxsScreen />
+      <Toast />
     </SafeAreaProvider>
   );
 }
