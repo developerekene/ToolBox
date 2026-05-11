@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Dimensions,
   ScrollView,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
@@ -66,10 +67,10 @@ import { tools } from "../../../utils/constant/data";
 import Contact from "./Contact";
 import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
 
-const ToolboxsScreen: React.FC = () => {
-  const handleClose = () => {
-    setSelectedTool(null);
-  };
+import Purchases from 'react-native-purchases';
+import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
+
+const ToolboxsScreen: any = () => {
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [userTier, setUserTier] = useState<Tier>("Silver");
@@ -83,10 +84,19 @@ const ToolboxsScreen: React.FC = () => {
   const [fabVisible, setFabVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
 
-  const isTierAccessible = (required: string) => {
-    const tiers = ["Silver", "Gold", "Platinum"];
-    return tiers.indexOf(userTier) >= tiers.indexOf(required);
-  };
+
+  useEffect(() => {
+    updateCustomerStatus();
+
+    // Optional: Listen for updates (purchases made elsewhere)
+    const listener = (info: any) => updateCustomerStatus();
+    Purchases.addCustomerInfoUpdateListener(listener);
+
+    // Clean up listener on unmount
+    return () => {
+      // Purchases.removeCustomerInfoUpdateListener(listener); // Deprecated in some versions, check docs
+    };
+  }, []);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -113,6 +123,83 @@ const ToolboxsScreen: React.FC = () => {
     };
     loadUser();
   }, []);
+
+  const updateCustomerStatus = useCallback(async () => {
+    try {
+      // 1. Check RevenueCat (Primary source of truth)
+      const isConfigured = await Purchases.isConfigured();
+      if (isConfigured) {
+        const customerInfo = await Purchases.getCustomerInfo();
+
+        if (customerInfo.entitlements.active['platinum_access']) {
+          setUserTier("Platinum");
+          await AsyncStorage.setItem("userTier", "Platinum"); // Sync storage
+        } else if (customerInfo.entitlements.active['gold_access']) {
+          setUserTier("Gold");
+          await AsyncStorage.setItem("userTier", "Gold"); // Sync storage
+        } else {
+          // 2. If no active RC sub, check if we have a manually set tier in Storage
+          const savedTier = await AsyncStorage.getItem("userTier");
+          const savedExpiry = await AsyncStorage.getItem("tierExpiry");
+
+          if (savedTier && savedExpiry) {
+            const now = new Date();
+            const expiry = new Date(savedExpiry);
+            if (now < expiry) {
+              setUserTier(savedTier as Tier);
+            } else {
+              setUserTier("Silver");
+            }
+          } else {
+            setUserTier("Silver");
+          }
+        }
+      }
+    } catch (e) {
+      console.log("Error syncing status:", e);
+    } finally {
+      setTierLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    updateCustomerStatus();
+
+    // Listen for real-time RC updates
+    const listener = () => updateCustomerStatus();
+    Purchases.addCustomerInfoUpdateListener(listener);
+    // Note: No cleanup needed for the standard listener in newer SDKs
+  }, [updateCustomerStatus]);
+
+  // --- REMAINDER OF YOUR RENDER FUNCTIONS ---
+
+  // 4. PREVENT EARLY RETURNS HERE
+  const filteredTools = tools.filter((tool) =>
+    tool.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  // ONLY return early at the very end of the logic
+  if (!tierLoaded) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#F59E0B" />
+      </View>
+    );
+  }
+
+  const handlePresentPaywall = async () => {
+    const result: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
+    if (result === PAYWALL_RESULT.PURCHASED || result === PAYWALL_RESULT.RESTORED) {
+      updateCustomerStatus(); // Refresh the UI tier
+    }
+  };
+
+  const isTierAccessible = (required: string) => {
+    const tiers = ["Silver", "Gold", "Platinum"];
+    return tiers.indexOf(userTier) >= tiers.indexOf(required);
+  };
+
+  const handleClose = () => setSelectedTool(null);
 
   const handleUpgrade = (tier: Tier) => {
     setUserTier(tier);
@@ -255,25 +342,19 @@ const ToolboxsScreen: React.FC = () => {
     }
   };
   if (!tierLoaded) return null;
-
-  const filteredTools = tools.filter((tool) =>
-    tool.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainerMain}>
         <View>
           <Text style={styles.title}>Toolbox</Text>
-          <Text style={styles.subtitle}>
-            Utility tools for your daily tasks
-          </Text>
+          <Text style={styles.subtitle}>Utility tools ({userTier} Member)</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.subtitle}
-            onPress={() => setMembershipVisible(true)}
+            onPress={handlePresentPaywall}
           >
-            <Text style={styles.btnText}>Upgrade Membership</Text>
+            <Text style={styles.btnText}>Upgrade</Text>
           </TouchableOpacity>
           {/* modal */}
 
@@ -338,47 +419,34 @@ const ToolboxsScreen: React.FC = () => {
         contentContainerStyle={{ paddingBottom: 20 }}
       >
         <View style={styles.grid}>
-          {filteredTools.length > 0 ? (
-            filteredTools.map((tool) => {
-              const isLocked = !isTierAccessible(tool.requiredTier);
-              return (
-                <TouchableOpacity
-                  key={tool.id}
-                  style={[
-                    styles.toolCard,
-                    {
-                      backgroundColor: tool.color,
-                      opacity: isLocked ? 0.5 : 1,
-                    },
-                  ]}
-                  onPress={() => !isLocked && setSelectedTool(tool.title)}
-                  disabled={isLocked}
-                >
-                  <View style={styles.tierBadge}>
-                    <Text style={styles.tierBadgeText}>
-                      {tool.requiredTier}
-                    </Text>
-                  </View>
-                  <FontAwesome5
-                    name={tool.icon as any}
-                    size={28}
-                    color="#fff"
-                  />
-                  <Text style={styles.toolText}>{tool.title}</Text>
-                  {isLocked && (
-                    <Ionicons
-                      name="lock-closed"
-                      size={18}
-                      color="#fff"
-                      style={styles.lockIcon}
-                    />
-                  )}
-                </TouchableOpacity>
-              );
-            })
-          ) : (
-            <Text style={styles.emptyText}>No tools match "{searchQuery}"</Text>
-          )}
+          {filteredTools.map((tool) => {
+            const isLocked = !isTierAccessible(tool.requiredTier);
+            return (
+              <TouchableOpacity
+                key={tool.id}
+                style={[
+                  styles.toolCard,
+                  { backgroundColor: tool.color, opacity: isLocked ? 0.6 : 1 },
+                ]}
+                onPress={() => {
+                  if (isLocked) {
+                    handlePresentPaywall(); // Show paywall if they click a locked tool
+                  } else {
+                    setSelectedTool(tool.title);
+                  }
+                }}
+              >
+                <View style={styles.tierBadge}>
+                  <Text style={styles.tierBadgeText}>{tool.requiredTier}</Text>
+                </View>
+                <FontAwesome5 name={tool.icon as any} size={28} color="#fff" />
+                <Text style={styles.toolText}>{tool.title}</Text>
+                {isLocked && (
+                  <Ionicons name="lock-closed" size={18} color="#fff" style={styles.lockIcon} />
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
 
@@ -429,9 +497,9 @@ const ToolboxsScreen: React.FC = () => {
                 setContactVisible(true); // then open contact modal
               }}
 
-              // onPress={() => {
-              //   /* Handle Contact */
-              // }}
+            // onPress={() => {
+            //   /* Handle Contact */
+            // }}
             >
               <Ionicons name="mail-outline" size={22} color="#fff" />
               <Text style={styles.fabOptionText}>Contact Us</Text>

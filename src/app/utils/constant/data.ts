@@ -229,7 +229,7 @@ export const tools = [
     color: "#DB2777",
     requiredTier: "Gold",
   },
-  
+
   {
     id: "33",
     title: "Phrasebook",
@@ -273,3 +273,7 @@ export const tools = [
     requiredTier: "Platinum",
   },
 ];
+
+// "react-native-google-mobile-ads": {
+//   "android_app_id": "ca-app-pub-5528750606185925~5205846363"
+// }
