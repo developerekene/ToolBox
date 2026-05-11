@@ -17,7 +17,7 @@ import {
 } from "../../../../../utils/constant/calendar/calendarutils";
 import { THEME } from "../../../../../utils/constant/calendar/types";
 
-// ─── Sample Seed Data ─────────────────────────────────────────────────────────
+// ─── Sample Seed Data
 
 const today = todayStr();
 const [y, m, d] = today.split("-").map(Number);
@@ -25,7 +25,7 @@ const fmt = (dy: number, mo = 0) => toDateStr(new Date(y, m - 1 + mo, d + dy));
 
 const SEED_EVENTS: CalendarEvent[] = [];
 
-// ─── State & Actions ──────────────────────────────────────────────────────────
+// ─── State & Actions
 
 interface CalendarState {
   events: CalendarEvent[];
@@ -109,7 +109,7 @@ function reducer(state: CalendarState, action: Action): CalendarState {
   }
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
+// ─── Context
 
 interface CalendarContextValue {
   state: CalendarState;

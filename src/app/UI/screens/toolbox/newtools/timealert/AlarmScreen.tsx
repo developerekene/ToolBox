@@ -35,7 +35,7 @@ interface AlarmEntry {
 
 const SNOOZE_OPTIONS = [0, 5, 10, 15];
 
-// ─── Drum-roll column ─────────────────────────────────────────────────────────
+// ─── Drum-roll column 
 const ITEM_H = 52;
 const VISIBLE = 5; // odd — selected sits in the middle
 
@@ -622,16 +622,14 @@ export default function AlarmScreen() {
 
         <View style={{ height: 100 }} />
       </ScrollView>
-
-      {/* FAB */}
+      {/* Floating Action Button */}
       <TouchableOpacity
-        style={[styles.fab, { backgroundColor: accent, shadowColor: accent }]}
+        style={styles.fab}
         onPress={openAdd}
-        activeOpacity={0.85}
+        activeOpacity={0.8}
       >
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
-
       {/* ── MODAL BOTTOM SHEET ── */}
       <Modal
         visible={showForm}
@@ -770,7 +768,6 @@ export default function AlarmScreen() {
           </ScrollView>
         </Animated.View>
       </Modal>
-
       {/* ── TIME PICKER MODAL ── */}
       <TimePickerModal
         visible={showTimePicker}
@@ -789,9 +786,9 @@ export default function AlarmScreen() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+// ─── Styles
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: T.bg },
+  root: { flex: 1, backgroundColor: T.bg, position: "relative" },
   scroll: { flex: 1, paddingHorizontal: 16 },
 
   empty: { alignItems: "center", paddingVertical: 60, gap: 8 },
@@ -839,19 +836,55 @@ const styles = StyleSheet.create({
   },
   deleteBtnText: { fontSize: 11, color: T.textSub },
 
+  // fab: {
+  // position: "absolute",
+  // bottom: 28,
+  // right: 20,
+  // width: 60,
+  // height: 60,
+  // borderRadius: 30,
+  // alignItems: "center",
+  // justifyContent: "center",
+  // shadowOffset: { width: 0, height: 4 },
+  // shadowOpacity: 0.45,
+  // shadowRadius: 14,
+  // elevation: 8,
+  // position: "absolute",
+  // bottom: 30,
+  // right: 20,
+  // backgroundColor: "#F59E0B", // Matching your upgrade button color
+  // width: 60,
+  // height: 60,
+  // borderRadius: 30,
+  // justifyContent: "center",
+  // alignItems: "center",
+  // elevation: 8,
+  // shadowColor: "#000",
+  // shadowOffset: { width: 0, height: 4 },
+  // shadowOpacity: 0.3,
+  // shadowRadius: 4,
+  // },
   fab: {
     position: "absolute",
-    bottom: 28,
+    bottom: 30,
     right: 20,
     width: 60,
     height: 60,
     borderRadius: 30,
-    alignItems: "center",
+    backgroundColor: "#F59E0B",
+
     justifyContent: "center",
+    alignItems: "center",
+
+    // Make sure it stays above everything
+    zIndex: 999,
+    elevation: 10,
+
+    // iOS shadow
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.45,
-    shadowRadius: 14,
-    elevation: 8,
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   fabText: {
     fontSize: 30,
@@ -864,7 +897,7 @@ const styles = StyleSheet.create({
   // ── Modal ──
   backdrop: {
     position: "absolute",
-    inset: 0, // covers entire screen
+    // inset: 0, // covers entire screen
     top: 0,
     bottom: 0,
     left: 0,
