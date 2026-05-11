@@ -49,7 +49,7 @@ import FileCompressor from "../toolbox/newtools/FileCompressor";
 import FileConverter from "../toolbox/newtools/FileConverter";
 import FileEditor from "../toolbox/newtools/FileEditor";
 import FileFillSign from "../toolbox/newtools/FileFillSign";
-import ImageEditor from "../toolbox/newtools/ImageEditor";
+import ImageEditor from "./newtools/imageEditor/ImageEditor";
 import KeywordGenerator from "../toolbox/newtools/KeywordGenerator";
 import PdfEditor from "../toolbox/newtools/PdfEditor";
 import Phrasebook from "../toolbox/newtools/Phrasebook";
@@ -72,7 +72,7 @@ const ToolboxsScreen: React.FC = () => {
   };
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [userTier, setUserTier] = useState<Tier>("Silver");
+  const [userTier, setUserTier] = useState<Tier>("Platinum");
   const [membershipVisible, setMembershipVisible] = useState(false);
 
   const [checkoutVisible, setCheckoutVisible] = useState(false);
@@ -230,7 +230,7 @@ const ToolboxsScreen: React.FC = () => {
       case "Image Editor":
         return <ImageEditor />;
 
-      case "Keyword Generator":
+      case "Keywords Generator":
         return <KeywordGenerator />;
 
       case "PDF Editor":

@@ -1,10 +1,11 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React from "react";
+import { ComingSoon } from "../../../component/CoomingSoon";
 
 const BackgroundRemover = () => {
   return (
     <View>
-      <Text>BackgroundRemover</Text>
+      <ComingSoon />
     </View>
   );
 };

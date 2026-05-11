@@ -367,30 +367,30 @@ export default function AlarmScreen() {
   const accent = T.amber;
 
   const [alarms, setAlarms] = useState<AlarmEntry[]>([
-    {
-      id: "seed1",
-      time: "07:00",
-      label: "Good morning",
-      active: true,
-      days: [1, 2, 3, 4, 5],
-      snoozeMinutes: 5,
-    },
-    {
-      id: "seed2",
-      time: "09:00",
-      label: "Standup meeting",
-      active: false,
-      days: [1, 2, 3, 4, 5],
-      snoozeMinutes: 0,
-    },
-    {
-      id: "seed3",
-      time: "18:30",
-      label: "Evening walk",
-      active: true,
-      days: [],
-      snoozeMinutes: 10,
-    },
+    // {
+    //   id: "seed1",
+    //   time: "07:00",
+    //   label: "Good morning",
+    //   active: true,
+    //   days: [1, 2, 3, 4, 5],
+    //   snoozeMinutes: 5,
+    // },
+    // {
+    //   id: "seed2",
+    //   time: "09:00",
+    //   label: "Standup meeting",
+    //   active: false,
+    //   days: [1, 2, 3, 4, 5],
+    //   snoozeMinutes: 0,
+    // },
+    // {
+    //   id: "seed3",
+    //   time: "18:30",
+    //   label: "Evening walk",
+    //   active: true,
+    //   days: [],
+    //   snoozeMinutes: 10,
+    // },
   ]);
 
   const [showForm, setShowForm] = useState(false);
