@@ -72,7 +72,7 @@ const ToolboxsScreen: React.FC = () => {
   };
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [userTier, setUserTier] = useState<Tier>("Platinum");
+  const [userTier, setUserTier] = useState<Tier>("Silver");
   const [membershipVisible, setMembershipVisible] = useState(false);
 
   const [checkoutVisible, setCheckoutVisible] = useState(false);
@@ -91,7 +91,9 @@ const ToolboxsScreen: React.FC = () => {
   useEffect(() => {
     const loadUser = async () => {
       const savedTier = await AsyncStorage.getItem("userTier");
+      // console.log(savedTier)
       const savedExpiry = await AsyncStorage.getItem("tierExpiry");
+      // console.log(savedExpiry)
 
       if (savedTier && savedExpiry) {
         const expiry = new Date(savedExpiry);

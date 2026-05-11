@@ -315,7 +315,7 @@ export default function ContactForm() {
             {/* Full Name */}
             <FieldInput
               label="Full Name"
-              placeholder="e.g. Amara Okafor"
+              placeholder="e.g. Stella Eneh"
               value={form.fullName}
               onChangeText={set("fullName")}
               error={errors.fullName}
