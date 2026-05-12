@@ -68,8 +68,8 @@ import { tools } from "../../../utils/constant/data";
 import Contact from "./Contact";
 import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
 
-import Purchases from 'react-native-purchases';
-import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
+// import Purchases from 'react-native-purchases';
+// import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 
 const ToolboxsScreen: any = () => {
 
@@ -91,7 +91,7 @@ const ToolboxsScreen: any = () => {
 
     // Optional: Listen for updates (purchases made elsewhere)
     const listener = (info: any) => updateCustomerStatus();
-    Purchases.addCustomerInfoUpdateListener(listener);
+    // Purchases.addCustomerInfoUpdateListener(listener);
 
     // Clean up listener on unmount
     return () => {
@@ -126,26 +126,26 @@ const ToolboxsScreen: any = () => {
   }, []);
 
   const updateCustomerStatus = useCallback(async () => {
-    const customerInfo = await Purchases.getCustomerInfo();
+    // const customerInfo = await Purchases.getCustomerInfo();
 
     // Check entitlements exactly as named in RevenueCat Dashboard
-    const isPlatinum = customerInfo.entitlements.active['platinum_access'];
-    const isGold = customerInfo.entitlements.active['gold_access'];
+    // const isPlatinum = customerInfo.entitlements.active['platinum_access'];
+    // const isGold = customerInfo.entitlements.active['gold_access'];
 
-    if (isPlatinum) {
-      setUserTier("Platinum");
-    } else if (isGold) {
-      setUserTier("Gold");
-    } else {
-      setUserTier("Silver");
-    }
+    // if (isPlatinum) {
+    //   setUserTier("Platinum");
+    // } else if (isGold) {
+    //   setUserTier("Gold");
+    // } else {
+    //   setUserTier("Silver");
+    // }
   }, []);
 
   useEffect(() => {
     updateCustomerStatus();
 
     const listener = () => updateCustomerStatus();
-    Purchases.addCustomerInfoUpdateListener(listener);
+    // Purchases.addCustomerInfoUpdateListener(listener);
   }, [updateCustomerStatus]);
   const filteredTools = tools.filter((tool) =>
     tool.title.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -159,41 +159,34 @@ const ToolboxsScreen: any = () => {
     );
   }
 
-  const handlePresentPaywall = async () => {
-    try {
-      // 1. Launch the Native RevenueCat Paywall
-      const result: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
+  // const handlePresentPaywall = async () => {
+  //   try {
+  //     const result: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
 
-      // 2. Handle the outcome of the paywall interaction
-      switch (result) {
-        case PAYWALL_RESULT.PURCHASED:
-        case PAYWALL_RESULT.RESTORED:
-          // The user successfully spent money or recovered an old sub.
-          // We MUST re-run our status check to unlock the Gold/Platinum tools.
-          await updateCustomerStatus();
-          break;
+  //     switch (result) {
+  //       case PAYWALL_RESULT.PURCHASED:
+  //       case PAYWALL_RESULT.RESTORED:
+  //         await updateCustomerStatus();
+  //         break;
 
-        case PAYWALL_RESULT.CANCELLED:
-          // User closed the paywall without buying. 
-          // Usually, you do nothing here, but you could log this for analytics.
-          break;
+  //       case PAYWALL_RESULT.CANCELLED:
+  //         break;
 
-        case PAYWALL_RESULT.ERROR:
-          // Something went wrong (no internet, Apple/Google Store down).
-          Toast.show({
-            type: 'error',
-            text1: 'Failed',
-            text2: "Could not process purchase. Please try again. 🚫",
-          });
-          break;
+  //       case PAYWALL_RESULT.ERROR:
+  //         Toast.show({
+  //           type: 'error',
+  //           text1: 'Failed',
+  //           text2: "Could not process purchase. Please try again. 🚫",
+  //         });
+  //         break;
 
-        default:
-          break;
-      }
-    } catch (error) {
-      console.error("Paywall Error:", error);
-    }
-  };
+  //       default:
+  //         break;
+  //     }
+  //   } catch (error) {
+  //     console.error("Paywall Error:", error);
+  //   }
+  // };
 
   const isTierAccessible = (required: string) => {
     const tiers = ["Silver", "Gold", "Platinum"];
@@ -353,7 +346,9 @@ const ToolboxsScreen: any = () => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.subtitle}
-            onPress={handlePresentPaywall}
+          // onPress={
+          //   handlePresentPaywall
+          // }
           >
             <Text style={styles.btnText}>Upgrade</Text>
           </TouchableOpacity>
@@ -431,7 +426,8 @@ const ToolboxsScreen: any = () => {
                 ]}
                 onPress={() => {
                   if (isLocked) {
-                    handlePresentPaywall(); // Show paywall if they click a locked tool
+                    return
+                    // handlePresentPaywall(); // Show paywall if they click a locked tool
                   } else {
                     setSelectedTool(tool.title);
                   }
