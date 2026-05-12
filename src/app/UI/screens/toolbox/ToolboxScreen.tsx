@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 // Silver Tools
 import CropToolScreen from "./silver/CropToolScreen";
@@ -68,13 +68,12 @@ import { tools } from "../../../utils/constant/data";
 import Contact from "./Contact";
 import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
 
-import Purchases from 'react-native-purchases';
+import Purchases from "react-native-purchases";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 
 const ToolboxsScreen: any = () => {
-
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [userTier, setUserTier] = useState<Tier>("Silver");
+  const [userTier, setUserTier] = useState<Tier>("Platinum");
   const [membershipVisible, setMembershipVisible] = useState(false);
 
   const [checkoutVisible, setCheckoutVisible] = useState(false);
@@ -84,7 +83,6 @@ const ToolboxsScreen: any = () => {
 
   const [fabVisible, setFabVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
-
 
   useEffect(() => {
     updateCustomerStatus();
@@ -129,8 +127,8 @@ const ToolboxsScreen: any = () => {
     const customerInfo = await Purchases.getCustomerInfo();
 
     // Check entitlements exactly as named in RevenueCat Dashboard
-    const isPlatinum = customerInfo.entitlements.active['platinum_access'];
-    const isGold = customerInfo.entitlements.active['gold_access'];
+    const isPlatinum = customerInfo.entitlements.active["platinum_access"];
+    const isGold = customerInfo.entitlements.active["gold_access"];
 
     if (isPlatinum) {
       setUserTier("Platinum");
@@ -153,7 +151,12 @@ const ToolboxsScreen: any = () => {
 
   if (!tierLoaded) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View
+        style={[
+          styles.container,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
+      >
         <ActivityIndicator size="large" color="#F59E0B" />
       </View>
     );
@@ -174,15 +177,15 @@ const ToolboxsScreen: any = () => {
           break;
 
         case PAYWALL_RESULT.CANCELLED:
-          // User closed the paywall without buying. 
+          // User closed the paywall without buying.
           // Usually, you do nothing here, but you could log this for analytics.
           break;
 
         case PAYWALL_RESULT.ERROR:
           // Something went wrong (no internet, Apple/Google Store down).
           Toast.show({
-            type: 'error',
-            text1: 'Failed',
+            type: "error",
+            text1: "Failed",
             text2: "Could not process purchase. Please try again. 🚫",
           });
           break;
@@ -443,7 +446,12 @@ const ToolboxsScreen: any = () => {
                 <FontAwesome5 name={tool.icon as any} size={28} color="#fff" />
                 <Text style={styles.toolText}>{tool.title}</Text>
                 {isLocked && (
-                  <Ionicons name="lock-closed" size={18} color="#fff" style={styles.lockIcon} />
+                  <Ionicons
+                    name="lock-closed"
+                    size={18}
+                    color="#fff"
+                    style={styles.lockIcon}
+                  />
                 )}
               </TouchableOpacity>
             );
@@ -498,9 +506,9 @@ const ToolboxsScreen: any = () => {
                 setContactVisible(true); // then open contact modal
               }}
 
-            // onPress={() => {
-            //   /* Handle Contact */
-            // }}
+              // onPress={() => {
+              //   /* Handle Contact */
+              // }}
             >
               <Ionicons name="mail-outline" size={22} color="#fff" />
               <Text style={styles.fabOptionText}>Contact Us</Text>
