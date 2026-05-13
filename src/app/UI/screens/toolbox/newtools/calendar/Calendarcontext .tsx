@@ -19,6 +19,7 @@ import {
   toDateStr,
 } from "../../../../../utils/constant/calendar/calendarutils";
 import { THEME } from "../../../../../utils/constant/calendar/types";
+import { CALENDAR_STORAGE_KEY } from "../../../../../utils/constant/alarmSync";
 
 // ─── Seed Data
 const today = todayStr();
@@ -26,8 +27,8 @@ const [y, m, d] = today.split("-").map(Number);
 const fmt = (dy: number, mo = 0) => toDateStr(new Date(y, m - 1 + mo, d + dy));
 const SEED_EVENTS: CalendarEvent[] = [];
 
-// ─── Persistence
-const STORAGE_KEY = "calendar_events";
+// ─── Persistence — uses the SAME key alarm sync writes to
+const STORAGE_KEY = CALENDAR_STORAGE_KEY;
 
 async function loadEvents(): Promise<CalendarEvent[]> {
   try {
@@ -40,7 +41,16 @@ async function loadEvents(): Promise<CalendarEvent[]> {
 
 async function saveEvents(events: CalendarEvent[]): Promise<void> {
   try {
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+    // Only persist non-alarm events here; alarm events are managed by alarmSync
+    const manualOnly = events.filter((e) => !e.id.startsWith("alarm_"));
+    // Reload alarm-derived events so we don't wipe them
+    const raw = await AsyncStorage.getItem(STORAGE_KEY);
+    const stored: CalendarEvent[] = raw ? JSON.parse(raw) : [];
+    const alarmEvents = stored.filter((e) => e.id.startsWith("alarm_"));
+    await AsyncStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify([...manualOnly, ...alarmEvents]),
+    );
   } catch (err) {
     console.error("Failed to save events to AsyncStorage:", err);
   }
@@ -152,7 +162,7 @@ export const CalendarProvider = ({ children }: { children: ReactNode }) => {
 
   const [hydrated, setHydrated] = useState(false);
 
-  // ─── Load persisted events on mount
+  // ─── Load all events (manual + alarm-derived) on mount
   useEffect(() => {
     loadEvents().then((events) => {
       dispatch({ type: "SET_ALL_EVENTS", events });
@@ -160,7 +170,7 @@ export const CalendarProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
-  // ─── Persist events on every change (after hydration)
+  // ─── Persist manual events on every change (after hydration)
   useEffect(() => {
     if (!hydrated) return;
     saveEvents(state.events);
@@ -221,7 +231,7 @@ export const CalendarProvider = ({ children }: { children: ReactNode }) => {
     return true;
   });
 
-  if (!hydrated) return null; // prevents flash of empty state
+  if (!hydrated) return null;
 
   return (
     <CalendarContext.Provider
@@ -255,8 +265,11 @@ export const useCalendar = () => {
 //   useContext,
 //   useReducer,
 //   useCallback,
+//   useEffect,
+//   useState,
 //   ReactNode,
 // } from "react";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 // import {
 //   CalendarEvent,
 //   EventCategory,
@@ -269,16 +282,33 @@ export const useCalendar = () => {
 // } from "../../../../../utils/constant/calendar/calendarutils";
 // import { THEME } from "../../../../../utils/constant/calendar/types";
 
-// // ─── Sample Seed Data
-
+// // ─── Seed Data
 // const today = todayStr();
 // const [y, m, d] = today.split("-").map(Number);
 // const fmt = (dy: number, mo = 0) => toDateStr(new Date(y, m - 1 + mo, d + dy));
-
 // const SEED_EVENTS: CalendarEvent[] = [];
 
-// // ─── State & Actions
+// // ─── Persistence
+// const STORAGE_KEY = "calendar_events";
 
+// async function loadEvents(): Promise<CalendarEvent[]> {
+//   try {
+//     const raw = await AsyncStorage.getItem(STORAGE_KEY);
+//     return raw ? (JSON.parse(raw) as CalendarEvent[]) : SEED_EVENTS;
+//   } catch {
+//     return SEED_EVENTS;
+//   }
+// }
+
+// async function saveEvents(events: CalendarEvent[]): Promise<void> {
+//   try {
+//     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+//   } catch (err) {
+//     console.error("Failed to save events to AsyncStorage:", err);
+//   }
+// }
+
+// // ─── State & Actions
 // interface CalendarState {
 //   events: CalendarEvent[];
 //   selectedDate: string;
@@ -288,6 +318,7 @@ export const useCalendar = () => {
 // }
 
 // type Action =
+//   | { type: "SET_ALL_EVENTS"; events: CalendarEvent[] }
 //   | { type: "ADD_EVENT"; event: CalendarEvent }
 //   | { type: "UPDATE_EVENT"; event: CalendarEvent }
 //   | { type: "DELETE_EVENT"; id: string }
@@ -308,16 +339,10 @@ export const useCalendar = () => {
 //   "education",
 // ];
 
-// const initialState: CalendarState = {
-//   events: SEED_EVENTS,
-//   selectedDate: todayStr(),
-//   viewMode: "month",
-//   activeCategories: ALL_CATEGORIES,
-//   searchQuery: "",
-// };
-
 // function reducer(state: CalendarState, action: Action): CalendarState {
 //   switch (action.type) {
+//     case "SET_ALL_EVENTS":
+//       return { ...state, events: action.events };
 //     case "ADD_EVENT":
 //       return { ...state, events: [...state.events, action.event] };
 //     case "UPDATE_EVENT":
@@ -362,7 +387,6 @@ export const useCalendar = () => {
 // }
 
 // // ─── Context
-
 // interface CalendarContextValue {
 //   state: CalendarState;
 //   addEvent: (event: Omit<CalendarEvent, "id" | "createdAt">) => void;
@@ -380,7 +404,29 @@ export const useCalendar = () => {
 // const CalendarContext = createContext<CalendarContextValue | null>(null);
 
 // export const CalendarProvider = ({ children }: { children: ReactNode }) => {
-//   const [state, dispatch] = useReducer(reducer, initialState);
+//   const [state, dispatch] = useReducer(reducer, {
+//     events: [],
+//     selectedDate: todayStr(),
+//     viewMode: "month" as ViewMode,
+//     activeCategories: ALL_CATEGORIES,
+//     searchQuery: "",
+//   });
+
+//   const [hydrated, setHydrated] = useState(false);
+
+//   // ─── Load persisted events on mount
+//   useEffect(() => {
+//     loadEvents().then((events) => {
+//       dispatch({ type: "SET_ALL_EVENTS", events });
+//       setHydrated(true);
+//     });
+//   }, []);
+
+//   // ─── Persist events on every change (after hydration)
+//   useEffect(() => {
+//     if (!hydrated) return;
+//     saveEvents(state.events);
+//   }, [state.events, hydrated]);
 
 //   const addEvent = useCallback(
 //     (event: Omit<CalendarEvent, "id" | "createdAt">) => {
@@ -424,7 +470,6 @@ export const useCalendar = () => {
 //     dispatch({ type: "TOGGLE_COMPLETE", id });
 //   }, []);
 
-//   // Filter events by active categories and search
 //   const filteredEvents = state.events.filter((e) => {
 //     if (!state.activeCategories.includes(e.category)) return false;
 //     if (state.searchQuery) {
@@ -437,6 +482,8 @@ export const useCalendar = () => {
 //     }
 //     return true;
 //   });
+
+//   if (!hydrated) return null; // prevents flash of empty state
 
 //   return (
 //     <CalendarContext.Provider
