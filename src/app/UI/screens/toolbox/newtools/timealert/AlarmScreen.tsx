@@ -351,7 +351,7 @@ const pcS = StyleSheet.create({
   confirmText: { fontSize: 15, fontWeight: "800", color: "#000" },
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ──────────────── ALARM-CALENDAR SYNC LOGIC ───────────────
 export default function AlarmScreen() {
   const accent = T.amber;
   const mounted = useRef(false);
