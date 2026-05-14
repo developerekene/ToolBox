@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 // Silver Tools
 import CropToolScreen from "./silver/CropToolScreen";
@@ -72,9 +72,8 @@ import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
 // import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 
 const ToolboxsScreen: any = () => {
-
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [userTier, setUserTier] = useState<Tier>("Silver");
+  const [userTier, setUserTier] = useState<Tier>("Platinum");
   const [membershipVisible, setMembershipVisible] = useState(false);
 
   const [checkoutVisible, setCheckoutVisible] = useState(false);
@@ -84,7 +83,6 @@ const ToolboxsScreen: any = () => {
 
   const [fabVisible, setFabVisible] = useState(false);
   const [contactVisible, setContactVisible] = useState(false);
-
 
   useEffect(() => {
     updateCustomerStatus();
@@ -127,11 +125,9 @@ const ToolboxsScreen: any = () => {
 
   const updateCustomerStatus = useCallback(async () => {
     // const customerInfo = await Purchases.getCustomerInfo();
-
     // Check entitlements exactly as named in RevenueCat Dashboard
     // const isPlatinum = customerInfo.entitlements.active['platinum_access'];
     // const isGold = customerInfo.entitlements.active['gold_access'];
-
     // if (isPlatinum) {
     //   setUserTier("Platinum");
     // } else if (isGold) {
@@ -153,7 +149,12 @@ const ToolboxsScreen: any = () => {
 
   if (!tierLoaded) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View
+        style={[
+          styles.container,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
+      >
         <ActivityIndicator size="large" color="#F59E0B" />
       </View>
     );
@@ -346,9 +347,9 @@ const ToolboxsScreen: any = () => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.subtitle}
-          // onPress={
-          //   handlePresentPaywall
-          // }
+            // onPress={
+            //   handlePresentPaywall
+            // }
           >
             <Text style={styles.btnText}>Upgrade</Text>
           </TouchableOpacity>
@@ -426,7 +427,7 @@ const ToolboxsScreen: any = () => {
                 ]}
                 onPress={() => {
                   if (isLocked) {
-                    return
+                    return;
                     // handlePresentPaywall(); // Show paywall if they click a locked tool
                   } else {
                     setSelectedTool(tool.title);
@@ -439,7 +440,12 @@ const ToolboxsScreen: any = () => {
                 <FontAwesome5 name={tool.icon as any} size={28} color="#fff" />
                 <Text style={styles.toolText}>{tool.title}</Text>
                 {isLocked && (
-                  <Ionicons name="lock-closed" size={18} color="#fff" style={styles.lockIcon} />
+                  <Ionicons
+                    name="lock-closed"
+                    size={18}
+                    color="#fff"
+                    style={styles.lockIcon}
+                  />
                 )}
               </TouchableOpacity>
             );
@@ -494,9 +500,9 @@ const ToolboxsScreen: any = () => {
                 setContactVisible(true); // then open contact modal
               }}
 
-            // onPress={() => {
-            //   /* Handle Contact */
-            // }}
+              // onPress={() => {
+              //   /* Handle Contact */
+              // }}
             >
               <Ionicons name="mail-outline" size={22} color="#fff" />
               <Text style={styles.fabOptionText}>Contact Us</Text>
