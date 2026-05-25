@@ -73,7 +73,7 @@ import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
 
 const ToolboxsScreen: any = () => {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [userTier, setUserTier] = useState<Tier>("Platinum");
+  const [userTier, setUserTier] = useState<Tier>("Silver");
   const [membershipVisible, setMembershipVisible] = useState(false);
 
   const [checkoutVisible, setCheckoutVisible] = useState(false);
