@@ -1,38 +1,37 @@
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import ToolboxsScreen from './src/app/UI/screens/toolbox/ToolboxScreen';
-import { Platform } from 'react-native';
-import { useEffect } from 'react';
-// import Purchases, { LOG_LEVEL } from 'react-native-purchases';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import Toast from 'react-native-toast-message';
 
-export default function App() {
+import ToolboxsScreen from './src/app/UI/screens/toolbox/ToolboxScreen';
 
-  // useEffect(() => {
-  //   const setupPurchases = async () => {
-  //     // 1. Set log level
-  //     Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-
-  //     // 2. Check if already configured to avoid the warning
-  //     const isConfigured = await Purchases.isConfigured();
-  //     if (isConfigured) return;
-
-  //     const iosApiKey = 'test_wHfPrvFWOQqFHnAoAWHndgLiMWg';
-  //     const androidApiKey = 'test_wHfPrvFWOQqFHnAoAWHndgLiMWg';
-
-  //     if (Platform.OS === 'ios') {
-  //       Purchases.configure({ apiKey: iosApiKey });
-  //     } else if (Platform.OS === 'android') {
-  //       Purchases.configure({ apiKey: androidApiKey });
-  //     }
-  //   };
-
-  //   setupPurchases();
-  // }, []);
-
+export default function App(): React.JSX.Element {
   return (
     <SafeAreaProvider>
-      <ToolboxsScreen />
+      <View style={styles.mainContainer}>
+        <ToolboxsScreen />
+      </View>
       <Toast />
+      <SafeAreaView edges={['bottom']} style={styles.adContainer}>
+        <BannerAd
+          unitId={TestIds.BANNER}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+  },
+  adContainer: {
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+  },
+});
