@@ -7,6 +7,13 @@ export const tools = [
     requiredTier: "Silver",
   },
   {
+    id: "39",
+    title: "Authenticator",
+    icon: "shield-alt",
+    color: "#10B981",
+    requiredTier: "Silver",
+  },
+  {
     id: "13",
     title: "Scientific Calculator",
     icon: "calculator",

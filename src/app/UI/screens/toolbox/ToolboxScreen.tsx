@@ -67,15 +67,16 @@ import { tools } from "../../../utils/constant/data";
 
 import Contact from "./Contact";
 import { CalendarProvider } from "./newtools/calendar/Calendarcontext ";
-
-// import Purchases from 'react-native-purchases';
-// import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
+import AuthenticatorToolScreen from "./silver/AuthenticatorToolScreen";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store";
 
 const ToolboxsScreen: any = () => {
 
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [userTier, setUserTier] = useState<Tier>("Silver");
   const [membershipVisible, setMembershipVisible] = useState(false);
+  const userData = useSelector((state: RootState) => state.user);
 
   const [checkoutVisible, setCheckoutVisible] = useState(false);
   const [checkoutTier, setCheckoutTier] = useState<Tier>("Gold");
@@ -211,6 +212,9 @@ const ToolboxsScreen: any = () => {
       case "Crop Tool":
         return <CropToolScreen />;
 
+      case "Authenticator":
+        return <AuthenticatorToolScreen />;
+
       case "Word Counter":
         return <WordCounterScreen />;
 
@@ -344,13 +348,16 @@ const ToolboxsScreen: any = () => {
           <Text style={styles.subtitle}>Utility tools ({userTier} Member)</Text>
         </View>
         <View style={styles.buttonContainer}>
+          <Text style={styles.btnText}>
+            {userData.firstName ? "Hi," : ""} {userData.firstName ? userData.firstName : ""} {" "}
+          </Text>
+
           <TouchableOpacity
-            style={styles.subtitle}
-          // onPress={
-          //   handlePresentPaywall
-          // }
+            style={styles.upgradeButton}
           >
-            <Text style={styles.btnText}>Upgrade</Text>
+            <Text style={styles.upgradeText}>
+              Upgrade
+            </Text>
           </TouchableOpacity>
           {/* modal */}
 
@@ -738,6 +745,21 @@ const styles = StyleSheet.create({
   closeOptionText: {
     color: "#ef4444",
     fontWeight: "700",
+  },
+
+  upgradeButton: {
+    backgroundColor: "#1E293B",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#F59E0B",
+  },
+
+  upgradeText: {
+    color: "#F59E0B",
+    fontWeight: "700",
+    fontSize: 12,
   },
 });
 
