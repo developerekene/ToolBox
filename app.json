@@ -52,7 +52,8 @@
           "locationAlwaysAndWhenInUsePermission": "Allow Toolbox to use your location to determine payment methods.",
           "locationWhenInUsePermission": "Allow Toolbox to use your location to determine payment methods."
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }
