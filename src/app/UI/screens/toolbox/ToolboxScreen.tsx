@@ -9,10 +9,11 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import Toast from 'react-native-toast-message';
-
+import { useNavigation } from "@react-navigation/native";
 // Silver Tools
 import CropToolScreen from "./silver/CropToolScreen";
 import WordCounterScreen from "./silver/WordCounterScreen";
@@ -159,35 +160,6 @@ const ToolboxsScreen: any = () => {
       </View>
     );
   }
-
-  // const handlePresentPaywall = async () => {
-  //   try {
-  //     const result: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
-
-  //     switch (result) {
-  //       case PAYWALL_RESULT.PURCHASED:
-  //       case PAYWALL_RESULT.RESTORED:
-  //         await updateCustomerStatus();
-  //         break;
-
-  //       case PAYWALL_RESULT.CANCELLED:
-  //         break;
-
-  //       case PAYWALL_RESULT.ERROR:
-  //         Toast.show({
-  //           type: 'error',
-  //           text1: 'Failed',
-  //           text2: "Could not process purchase. Please try again. 🚫",
-  //         });
-  //         break;
-
-  //       default:
-  //         break;
-  //     }
-  //   } catch (error) {
-  //     console.error("Paywall Error:", error);
-  //   }
-  // };
 
   const isTierAccessible = (required: string) => {
     const tiers = ["Silver", "Gold", "Platinum"];
@@ -355,7 +327,7 @@ const ToolboxsScreen: any = () => {
           <TouchableOpacity
             style={styles.upgradeButton}
           >
-            <Text style={styles.upgradeText}>
+            <Text style={styles.upgradeText} onPress={() => setMembershipVisible(true)}>
               Upgrade
             </Text>
           </TouchableOpacity>
